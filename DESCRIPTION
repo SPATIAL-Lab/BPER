@@ -1,0 +1,27 @@
+Package: BPER
+Type: Package
+Title: Bayesian Paleo Environment Reconstructor 
+Version: 0.1.0
+Authors@R: c(
+    person("Dustin", "Harper", email = "dustin.t.harper@utah.edu", 
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0002-4855-3849")),
+    person("Gabriel", "Bowen", email = "gabe.bowen@utah.edu", role = "aut"))
+Description: This package loads and grooms geochemical proxy data, 
+    writes a forward proxy system Bayesian heirarchical model, 
+    and runs a MCMC inversion to generate posterior distributions of 
+    user-specified proxy system parameters, and climate and carbon 
+    cycle variables. This version includes the foraminiferal proxy 
+    system, with plans to include phytoplankton, paleosol and 
+    terrestrial plant proxy systems.   
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+Depends: 
+    R (>= 2.10)
+Imports: 
+    mcmcplots,
+    R2jags,
+    rjags
+URL: https://github.com/SPATIAL-Lab/BPER
+BugReports: https://github.com/SPATIAL-Lab/BPER/issues
