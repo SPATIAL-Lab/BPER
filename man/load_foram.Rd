@@ -4,7 +4,7 @@
 \alias{load_foram}
 \title{Checks and formats foraminiferal proxy data}
 \usage{
-load_foram(foram_data = foram_data, load.priors = TRUE)
+load_foram(foram_data = foram_data)
 }
 \arguments{
 \item{foram_data}{User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns

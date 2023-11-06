@@ -20,7 +20,7 @@
 #' load_foram(foram_data)
 #' 
 #' @export
-load_foram <- function(foram_data = foram_data, load.priors = TRUE){
+load_foram <- function(foram_data = foram_data){
   # Check that the correct number of columns are input - i.e. follows the template
   if (ncol(foram_data) == 8){
     prox_in = data.frame(foram_data)
@@ -73,12 +73,7 @@ load_foram <- function(foram_data = foram_data, load.priors = TRUE){
   } else{
     stop("Must include some type of the following data combinations (B = d11B, O = d18O, Mg = Mg/Ca): B+M+O, B+M, B+O, M+O, B, M")
   }
-  
-  # load the 'priors_in_foram.R' script for user to fill out for the 'priors_foram' function
-  if(load.priors == TRUE){
-  priors_in_foram <- system.file("extdata", "priors_in_foram.R", package = "BPER")
-  save(priors_in_foram, "priors_in_foram.R")
-  }
+
   
   load_foram = list(prox_in, obs_type)
   class(load_foram) = "load_foram"

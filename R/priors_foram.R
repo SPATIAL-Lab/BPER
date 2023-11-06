@@ -11,7 +11,7 @@
 #' @param priors Specify the path to the 'priors_in_foram.R' script used to define all the prior distributions. Defaults 
 #' to system data file if no path is provided. 
 #'
-#' @param age_index User inputs the list that is returned by the 'age_index'. Defauts to 'age_index'.
+#' @param age_index User inputs the list that is returned by the 'age_index'. Defaults to 'age_index'.
 #'
 #' @param cc2ndparm.vt Second carbonate chemistry variable type to be used to compute CO2 in addition to pH.
 #' Select from 'dic' 'alk' 'co3' hco3' or 'omegac'. Defaults to 'dic'.
@@ -34,7 +34,7 @@
 #'
 #' @export
 priors_foram <- function(priors = system.file("extdata", "priors_in_foram.R", package = "BPER"), age_index = age_index, 
-                         cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', cc2ndparmTS = cc2ndparmTS, save.output = FALSE){
+                         cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', cc2ndparmTS){
 
   # Pull in prior values from 'priors_in_foram.R' script
   source(priors)
@@ -301,13 +301,6 @@ priors_foram <- function(priors = system.file("extdata", "priors_in_foram.R", pa
 
   psm_type <- paste(cc2ndparm.vt, cc2ndparm.pt, sep = "_")
   priors_foram <- list(clean_pri, psm_type)
-  class(priors_foram) = "priors_foram"
-
-  if(save.output == TRUE){
-    dir.create(file.path("BPER_out"))
-    saveRDS(priors_foram, file = "BPER_out/priors_foram.rds")
-  }
-
   class(priors_foram) = "priors_foram"
   return(priors_foram)
 }

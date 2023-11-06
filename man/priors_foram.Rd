@@ -9,15 +9,14 @@ priors_foram(
   age_index = age_index,
   cc2ndparm.vt = "dic",
   cc2ndparm.pt = "ts",
-  cc2ndparmTS = cc2ndparmTS,
-  save.output = FALSE
+  cc2ndparmTS
 )
 }
 \arguments{
 \item{priors}{Specify the path to the 'priors_in_foram.R' script used to define all the prior distributions. Defaults 
 to system data file if no path is provided.}
 
-\item{age_index}{User inputs the list that is returned by the 'age_index'. Defauts to 'age_index'.}
+\item{age_index}{User inputs the list that is returned by the 'age_index'. Defaults to 'age_index'.}
 
 \item{cc2ndparm.vt}{Second carbonate chemistry variable type to be used to compute CO2 in addition to pH.
 Select from 'dic' 'alk' 'co3' hco3' or 'omegac'. Defaults to 'dic'.}

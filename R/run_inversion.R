@@ -39,7 +39,7 @@
 #' @export
 run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
-                          n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, save.output = FALSE){
+                          n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1){
 
   clean_pri <- priors_foram[[1]]
   psm_type <- priors_foram[[2]]
@@ -94,12 +94,6 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
 
   ages_prox <- clean_obs[["ages_prox"]]
   inv_out = list("jout" = jout, "ages_prox" = ages_prox, "save.parms" = save.parms)
-  class(inv_out) <- "inv_out"
-
-  if(save.output == TRUE){
-    saveRDS(inv_out, file = file.path("BPER_out/inv_out.rds"))
-    writeLines(model.string, con = "BPER_out/psm_code.txt")
-  }
 
   if(any(jout$BUGSoutput$summary$n.eff < 50)){
     warning("Some parameters have n.eff statistical parameter values less than 50, consider running more iterations")
