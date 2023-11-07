@@ -25,3 +25,7 @@ Imports:
     rjags
 URL: https://github.com/SPATIAL-Lab/BPER
 BugReports: https://github.com/SPATIAL-Lab/BPER/issues
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

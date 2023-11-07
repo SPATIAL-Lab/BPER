@@ -92,7 +92,7 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
                       data = data, inits = NULL, n.chains = n.chains, n.iter = n.iter,
                       n.burnin = n.burnin, n.thin = n.thin)
 
-  ages_prox <- clean_obs[["ages_prox"]]
+  ages_prox <- clean_obs[["ages.prox"]]
   inv_out = list("jout" = jout, "ages_prox" = ages_prox, "save.parms" = save.parms)
 
   if(any(jout$BUGSoutput$summary$n.eff < 50)){
