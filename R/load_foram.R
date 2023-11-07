@@ -8,7 +8,9 @@
 #' If no modifications to priors are needed, this can be turned off using 'load.priors' argument. 
 #'
 #' @param foram_data User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns
-#' should be organized as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The order matters.
+#' should be organized as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The order matters. Current 
+#' d11Bspec options are: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values 
+#'in 'priors_in_foram.R'), or 'borate'
 #' 
 #' @param load.priors Logical. When TRUE, writes 'priors_in_foram.R' file to parent directory which can be modified 
 #' by the user. Defaults to TRUE.

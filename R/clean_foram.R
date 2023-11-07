@@ -22,7 +22,7 @@ clean_foram <- function(age_index = age_index){
 
 
   if(!inherits(dt, "numeric") | length(dt) < 2){
-    stop("Must include numeric 'dt' vector, greater than length 2, in arguments")
+    stop("Must include numeric 'dt' vector, greater than length 2, in list object in arguments")
   }
 
   if(length(prox_in_ai$d11B) < 1){
@@ -73,7 +73,7 @@ clean_foram <- function(age_index = age_index){
   clean_obs = list("ai.d11B" = ai.d11B, "si.d11B" = si.d11B, "d11Bf.data" = d11Bf.data, "d11Bfu.data" = d11Bfu.data, "d11Bf.fs" = d11Bf.fs,
                    "ai.mgca" = ai.mgca, "mgcaf.data" = mgcaf.data, "mgcafu.data" = mgcafu.data, "mgcaf.fs" = mgcaf.fs,
                    "ai.d18O" = ai.d18O, "d18Of.data" = d18Of.data, "d18Ofu.data" = d18Ofu.data, "d18Of.fs" = d18Of.fs,
-                   "ai.prox" = ai.prox, "dt" = dt, "ages_prox" = ages_prox, "obs_type" = obs_type)
+                   "ai.prox" = ai.prox, "dt" = dt, "ages.prox" = ages_prox, "obs_type" = obs_type)
   
   class(clean_obs) = "clean_obs"
   return(clean_obs)
