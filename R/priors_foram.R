@@ -33,11 +33,15 @@
 #' cc2ndparm.pt = 'ts', cc2ndparmTS = cc2ndparmTS, save.output = FALSE)
 #'
 #' @export
-priors_foram <- function(priors = system.file("extdata", "priors_in_foram.R", package = "BPER"), age_index = age_index, 
-                         cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', cc2ndparmTS){
+priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', cc2ndparmTS){
 
-  # Pull in prior values from 'priors_in_foram.R' script
-  source(priors)
+  # Load the prior values from user or default package data
+  if(is.null(priors_foram_adj)){
+    parms_foram <- system.file("extdata", "parms_in_foram.R", package = "BPER")
+    source(parms_foram)
+  } else
+  parms_foram <- parms_foram_adj
+  list2env(parms_foram,globalenv())
 
   # Load ages_prox from 'age_index' object - product of age_index function
   ages_prox <- age_index[[2]]

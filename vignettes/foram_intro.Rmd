@@ -48,25 +48,41 @@ clean_obs <- clean_foram(age_index = age_index)
 ```
 
 
-Revise and load prior distributions for the MCMC inversion. Access the package data file 'priors_in_foram.R'. This will open a '.R' 
-script file in an editor window (should default to RStudio if using RStudio). Revise this script  as needed to define the prior 
-distributions. More details are included as comments in the 'priors_in_foram.R' file. Save this '.R' file in the working directory 
-or along a file path which will need to be specified in the 'priors_foram' function.
-
-Load in the priors from the 'priors_in_foram.R' file you just saved to the directory. Also include the 'age_index' return object 
-from the 'age_index' function. Specify which 2nd carbonate chem variable to use in pH calcs. Type ?priors_forams for list of options. 
-Also specify the type of prior 'cc2ndparm.pt' to use for the 2nd carb chem variable, either as an autocorrelated time series 
-model with prior distribution defined at time step 1 ('t1') or as a time series with the prior distribution defined at each time
-step ('ts'). If 'ts' is selected, the user must include time series data object for 'cc2ndparmTS' argument consisting of 3 columns: 
-age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable. This record should span the data interval, but values
-do not need to be included for every time step as the record will be linearly interpolated to create a time-continuous record.
+Revise and load user accessible parameters for the MCMC inversion. Access the package data file 'priors_in_foram.R'. This will open 
+a '.R' script file in an editor window (should default to RStudio if using RStudio). This script contains the default values for 
+a number of parameters, including prior distributions. Look through the script and documentation to determine which values to 
+adjust. A list and description of editable parameters is also provided in the help documentation of the function 'parms_foram_adj'. 
 ```{r}
-file.edit(system.file("extdata", "priors_in_foram.R", package = "BPER"))
+file.edit(system.file("extdata", "parms_in_foram.R", package = "BPER"))
+```
+
+
+Any of the values listed in the above '.R' script can be revised using 'parms_foram_adjust' function. There are two arguments in this 
+function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values.
+For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. To 
+demonstrate, we will adjust the temperature and d11Bsw prior distribution parameters.
+```{r}
+parm_names <- c("tempC.m", "tempC.sd", "d11Bsw.m", "d11Bsw.sd")
+parm_values <- c(23, 4, 38.35, 0.75)
+
+parms_foram_adj <- parms_foram_adj(parms2change = parm_names, change_values = parm_values)
+```
+
+
+Load in the adjusted parameters using the 'parms_forams_adj' argument OR do not include this argument to maintain default parameter 
+values. Include the 'age_index' return object from the 'age_index' function in arguments. Specify which 2nd carbonate chem variable 
+to use in CO2 calcs. Type ?priors_forams for list of options. Specify the type of prior 'cc2ndparm.pt' to use for the 2nd carb chem 
+variable, either as an autocorrelated time series model with prior distribution defined at time step 1 ('t1') or as a time series 
+with the prior distribution defined at each time step ('ts'). If 'ts' is selected, the user must include time series data object for 
+'cc2ndparmTS' argument consisting of 3 columns: age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable. This 
+record should span the data interval, but values do not need to be included for every time step as the record will be linearly 
+interpolated to create a time-continuous record.
+```{r}
 
 dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), c(2.320, 2.328, 2.405, 2.440, 2.481, 2.500), 
                       c(0.15, 0.15, 0.15, 0.15, 0.15, 0.15)) 
 
-priors_foram <- priors_foram(priors = 'priors_in_foram.R', age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', 
+priors_foram <- priors_foram(parms_forams_adj = parms_forams_adj, age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', 
                              cc2ndparmTS = dic_pri)
 ```
 
@@ -74,11 +90,10 @@ priors_foram <- priors_foram(priors = 'priors_in_foram.R', age_index = age_index
 Run the MCMC inversion by supplying in the 'clean_foram' and 'priors_foram' return objects. Specify a vector of character strings 
 indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations
 ('n.iter'), the number of chains ('.n.chains'), the number of burn-in iterations ('n.burnin') and the amount of thinning (n.thin;
-i.e., saves every 'n'th iteration). A data set with on the order of tens of samples takes ~2 minutes to load priors, and then 
-1 minute per 10000 iterations on my laptop. 
+i.e., saves every 'n'th iteration). 
 
 A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical
-parameters Rhat and n.eff in inv_out$jout$BUGSoutput$summary to make sure they are acceptable 
+parameters 'Rhat' and 'n.eff' in 'inv_out$jout$BUGSoutput$summary' to make sure they are acceptable.
 ```{r}
 inv_out <- run_inversion(clean_obs = clean_obs, priors_foram = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),

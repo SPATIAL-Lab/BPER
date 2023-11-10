@@ -5,7 +5,7 @@
 \title{Loads prior distributions for foram model}
 \usage{
 priors_foram(
-  priors = system.file("extdata", "priors_in_foram.R", package = "BPER"),
+  parms_foram_adj,
   age_index = age_index,
   cc2ndparm.vt = "dic",
   cc2ndparm.pt = "ts",
@@ -13,9 +13,6 @@ priors_foram(
 )
 }
 \arguments{
-\item{priors}{Specify the path to the 'priors_in_foram.R' script used to define all the prior distributions. Defaults 
-to system data file if no path is provided.}
-
 \item{age_index}{User inputs the list that is returned by the 'age_index'. Defaults to 'age_index'.}
 
 \item{cc2ndparm.vt}{Second carbonate chemistry variable type to be used to compute CO2 in addition to pH.
@@ -26,6 +23,9 @@ with autocorrelated time series model or 'ts' for time series input by user to d
 
 \item{cc2ndparmTS}{If 'ts' is selected for 'cc2ndparm.pt', user must provide time series R data object
 consisting of 3 columns of data: age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable.}
+
+\item{priors}{Specify the path to the 'priors_in_foram.R' script used to define all the prior distributions. Defaults 
+to system data file if no path is provided.}
 
 \item{save.output}{Logical. Specify TRUE if you want prior distributions to be saved to a 'model_out' folder
 in the directory. Defaults to FALSE.}
