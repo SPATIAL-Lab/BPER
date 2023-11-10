@@ -36,7 +36,7 @@
 priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', cc2ndparmTS){
 
   # Load the prior values from user or default package data
-  if(is.null(priors_foram_adj)){
+  if(is.null(parms_foram_adj)){
     parms_foram <- system.file("extdata", "parms_in_foram.R", package = "BPER")
     source(parms_foram)
   } else

@@ -1,7 +1,5 @@
 
-#
-# Enter prior distributions for the foraminifera PSM
-#
+# User-editable model parameters and prior distribution, with default values
 
 ########################################################################################
 # SALINITY TEMPERATURE AND PRESSURE 
