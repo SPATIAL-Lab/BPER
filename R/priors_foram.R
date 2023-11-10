@@ -266,9 +266,6 @@ priors_foram <- function(priors = system.file("extdata", "priors_in_foram.R", pa
                      "tempC.lb" = tempC.lb, "sal.lb" = sal.lb, "press.lb" = press.lb, "press.ub" = press.ub,
                      "t.inc" = t.inc, "s.inc" = s.inc, "p.inc" = p.inc,
                      "K0a" = K0a, "Ks1a" = Ks1a, "Ks2a" = Ks2a, "Ksspca" = Ksspca, "KsBa" = KsBa, "Kswa" = Kswa)
-    if (length(clean_pri) < 1){
-      stop("Must provide values for priors in 'priors_in_foram.R' script")
-    }
   }
 
   # Generate clean list of priors for time series prior type
@@ -299,6 +296,24 @@ priors_foram <- function(priors = system.file("extdata", "priors_in_foram.R", pa
     }
   }
 
+  if(clean_pri$pHpccorrsd <= 0){
+    warning("You have set 'pHpccorrsd' to zero. Only do this if you intend to turn off the pH correction on Mg/Caforam 
+            entirely. If this is intended, be sure to also change 'pHpccorr' to zero")
+    clean_pri$pHpccorrsd <- 1e-20
+  }
+  
+  if(clean_pri$seccal.sd <= 0){
+    warning("You have set 'seccal.sd' to zero. Only do this if you intend to turn off the diagenetic correction 
+            entirely. If this is intended, be sure to change 'seccal' to zero")
+    clean_pri$seccal.sd <- 1e-20
+  }
+  
+  if(clean_pri$tempC.sd <= 0 | clean_pri$sal.sd <= 0 | clean_pri$press.sd <= 0 | clean_pri$d11Bsw.sd <= 0 | clean_pri$d18Osw.sd <= 0 |
+     clean_pri$xca.sd <= 0 | clean_pri$xmg.sd <= 0 | clean_pri$xso4.sd <= 0 |clean_pri$Hp.sd <= 0 | clean_pri$Bmod.sd <= 0 |
+     clean_pri$A.sd <= 0){
+    stop("Standard deviations of user-specified prior distributions must be positive and non-zero, unless turning off a correction")
+  }
+  
   psm_type <- paste(cc2ndparm.vt, cc2ndparm.pt, sep = "_")
   priors_foram <- list(clean_pri, psm_type)
   class(priors_foram) = "priors_foram"
