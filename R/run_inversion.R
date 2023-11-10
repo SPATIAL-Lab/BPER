@@ -45,7 +45,7 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
   psm_type <- priors_foram[[2]]
 
   # Combine data lists to be sent to jags
-  clean_obs <- clean_obs[clean_obs != "obs_type"]
+  clean_obs <- clean_obs[names(clean_obs) != "obs_type"]
   data <- append(clean_obs, clean_pri)
 
   # Determine forward PSM model file to use based on type of 2nd carb chem variable and prior
@@ -95,12 +95,14 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
 
   ages_prox <- clean_obs[["ages.prox"]]
   inv_out = list("jout" = jout, "ages_prox" = ages_prox, "save.parms" = save.parms)
-
-  if(any(jout$BUGSoutput$summary$n.eff < 50)){
+  
+  summarydf <- data.frame(jout$BUGSoutput$summary)
+  
+  if(any(summarydf$n.eff < 50)){
     warning("Some parameters have n.eff statistical parameter values less than 50, consider running more iterations")
   }
   
-  if(any(jout$BUGSoutput$summary$Rhat > 1.03)){
+  if(any(summarydf$Rhat > 1.03)){
     warning("Some parameters have Rhat statistical parameter values greater than 1.03, consider running more iterations")
   }
   
