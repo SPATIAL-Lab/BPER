@@ -76,7 +76,7 @@ variable, either as an autocorrelated time series model with prior distribution 
 with the prior distribution defined at each time step ('ts'). If 'ts' is selected, the user must include time series data object for 
 'cc2ndparmTS' argument consisting of 3 columns: age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable. This 
 record should span the data interval, but values do not need to be included for every time step as the record will be linearly 
-interpolated to create a time-continuous record.
+interpolated to create a time-continuous record. 'priors_foram' can take several minutes to run.
 ```{r}
 
 dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), c(2.320, 2.328, 2.405, 2.440, 2.481, 2.500), 
@@ -90,7 +90,7 @@ priors_foram <- priors_foram(parms_forams_adj = parms_forams_adj, age_index = ag
 Run the MCMC inversion by supplying in the 'clean_foram' and 'priors_foram' return objects. Specify a vector of character strings 
 indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations
 ('n.iter'), the number of chains ('.n.chains'), the number of burn-in iterations ('n.burnin') and the amount of thinning (n.thin;
-i.e., saves every 'n'th iteration). 
+i.e., saves every 'n'th iteration). The model can take several minutes to initialize and ~minutes per 1000 iterations to run. 
 
 A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical
 parameters 'Rhat' and 'n.eff' in 'inv_out$jout$BUGSoutput$summary' to make sure they are acceptable.
