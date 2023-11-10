@@ -18,46 +18,51 @@ knitr::opts_chunk$set(
 library(BPER)
 ```
 
+
+Load a nx8 (8 column, n row(s)) data object, with columns ordered as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. 
+The column order matters. Indicate modern species' d11B vital effects to be applied for d11Bspec. Options currently include: 'Grub' 
+(G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values below in 'priors_in_foram.R'), or 'borate'.
+
+Run the 'load_foram' function on the input data. 
 ```{r}
-# Load a nx8 (8 column, n row(s)) data object, with columns ordered as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. 
-# The column order matters. Indicate modern species' d11B vital effects to be applied for d11Bspec. Options currently include: 'Grub' 
-# (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values below in 'priors_in_foram.R'), or 'borate'.
 x <- data.frame(c(55956, 55956, 55954, 55932, 55926, 55924, 55901, 55899), c(14.61, 15.46, NA, 14.49, 14.11, NA, 14.46, 13.94), 
                 c(0.23, 0.22, NA, 0.34, 0.33, NA, 0.21, 0.29), c("Tsac", "Grub", NA, "Grub", "Tsac", NA, "Grub", "Tsac"), 
                 c(3.26, NA, 3.33, 5.04, NA, 4.83, NA, NA), c(0.1, NA, 0.1, 0.15, NA, 0.14, NA, NA), 
                 c(NA, NA, NA, -2.14, NA, -1.98, -2.19, -1.99), c(NA, NA, NA, 0.16, NA, 0.16, 0.16, 0.16))
 
-# Run the 'load_foram' function on the input data. 
 load_foram <- load_foram(foram_data = x)
 ```
 
+
+Take the returned list from 'load_foram' and use it for 'load_proxy' argument in 'age_index' function. Specify: the 'age_units'
+used in the data set ('kyr' or 'Myr'), the time step type ('step_type'): 'regular' for evenly spaced intervals or 'every' for a time step
+for every unique age in the data set. If 'regular' is specified, specify the step interval ('step_int'). 
 ```{r}
-# Take the returned list from 'load_foram' and use it for 'load_proxy' argument in 'age_index' function. Specify: the 'age_units'
-# used in the data set ('kyr' or 'Myr'), the time step type ('step_type'): 'regular' for evenly spaced intervals or 'every' for a time step 
-# for every unique age in the data set. If 'regular' is specified, specify the step interval ('step_int'). 
 age_index <- age_index(load_proxy = load_foram, age_units = 'kyr', step_type = 'regular', step_int = 10)
 ```
 
+
+Use 'clean_foram' function on the return list from 'age_index' to compile and structure observational data for the MCMC inversion.
 ```{r}
-# Use 'clean_foram' function on the return list from 'age_index' to compile and structure observational data for the 
-# MCMC inversion. 
 clean_obs <- clean_foram(age_index = age_index)
 ```
 
+
+Revise and load prior distributions for the MCMC inversion. Access the package data file 'priors_in_foram.R'. This will open a '.R' 
+script file in an editor window (should default to RStudio if using RStudio). Revise this script  as needed to define the prior 
+distributions. More details are included as comments in the 'priors_in_foram.R' file. Save this '.R' file in the working directory 
+or along a file path which will need to be specified in the 'priors_foram' function.
+
+Load in the priors from the 'priors_in_foram.R' file you just saved to the directory. Also include the 'age_index' return object 
+from the 'age_index' function. Specify which 2nd carbonate chem variable to use in pH calcs. Type ?priors_forams for list of options. 
+Also specify the type of prior 'cc2ndparm.pt' to use for the 2nd carb chem variable, either as an autocorrelated time series 
+model with prior distribution defined at time step 1 ('t1') or as a time series with the prior distribution defined at each time
+step ('ts'). If 'ts' is selected, the user must include time series data object for 'cc2ndparmTS' argument consisting of 3 columns: 
+age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable. This record should span the data interval, but values
+do not need to be included for every time step as the record will be linearly interpolated to create a time-continuous record.
 ```{r}
-# Revise and load prior distributions for the MCMC inversion. Access the package data file 'priors_in_foram.R'. This will open a '.R' 
-# script file in an editor window (should default to RStudio if using RStudio). Revise this script  as needed to define the prior 
-# distributions. More details are included as comments in the 'priors_in_foram.R' file. Save this '.R' file in the working directory 
-# or along a file path which will need to be specified in the 'priors_foram' function.
 file.edit(system.file("extdata", "priors_in_foram.R", package = "BPER"))
 
-# Load in the priors from the 'priors_in_foram.R' file you just saved to the directory. Also include the 'age_index' return object 
-# from the 'age_index' function. Specify which 2nd carbonate chem variable to use in pH calcs. Type ?priors_forams for list of options. 
-# Also specify the type of prior 'cc2ndparm.pt' to use for the 2nd carb chem variable, either as an autocorrelated time series 
-# model with prior distribution defined at time step 1 ('t1') or as a time series with the prior distribution defined at each time
-# step ('ts'). If 'ts' is selected, the user must include time series data object for 'cc2ndparmTS' argument consisting of 3 columns: 
-# age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable. This record should span the data interval, but values
-# do not need to be included for every time step as the record will be linearly interpolated to create a time-continuous record.
 dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), c(2.320, 2.328, 2.405, 2.440, 2.481, 2.500), 
                       c(0.15, 0.15, 0.15, 0.15, 0.15, 0.15)) 
 
@@ -65,42 +70,49 @@ priors_foram <- priors_foram(priors = 'priors_in_foram.R', age_index = age_index
                              cc2ndparmTS = dic_pri)
 ```
 
+
+Run the MCMC inversion by supplying in the 'clean_foram' and 'priors_foram' return objects. Specify a vector of character strings 
+indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations
+('n.iter'), the number of chains ('.n.chains'), the number of burn-in iterations ('n.burnin') and the amount of thinning (n.thin;
+i.e., saves every 'n'th iteration). A data set with on the order of tens of samples takes ~2 minutes to load priors, and then 
+1 minute per 10000 iterations on my laptop. 
+
+A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical
+parameters Rhat and n.eff in inv_out$jout$BUGSoutput$summary to make sure they are acceptable 
 ```{r}
-# Run the MCMC inversion by supplying in the 'clean_foram' and 'priors_foram' return objects. Specify a vector of character strings 
-# indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations
-# ('n.iter'), the number of chains ('.n.chains'), the number of burn-in iterations ('n.burnin') and the amount of thinning (n.thin;
-# i.e., saves every 'n'th iteration). # A data set with on the order of hundreds Mg/Ca and d18O and tens of d11B data takes ~1 minute 
-# per 10000 iterations on my laptop.  
 inv_out <- run_inversion(clean_obs = clean_obs, priors_foram = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
                           n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1)
 
-# A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical
-# parameters Rhat and n.eff in inv_out$jout$BUGSoutput$summary to make sure they are acceptable 
+
 View(inv_out$jout$BUGSoutput$summary)
 ```
 
+
+It is recommended that chain convergence is confirmed using trace plots (i.e., built in 'trace_plot' function). Specify
+the parameter of interest and the number of randomly selected trace plots for that parameter (n >1 for time-dependent parameters).
 ```{r}
-# It is recommended that chain convergence is confirmed using trace plots (i.e., built in 'trace_plot' function). Specify
-# the parameter of interest and the number of randomly selected trace plots for that parameter (n >1 for time-dependent parameters).
 trace_plot(inv_out = inv_out, parm = "pco2", n = 3)
 ```
 
+
+Use the post_plot function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type'
+argument, the user can select either CI to plot the 95% credible interval, or "draws" for 500 random draws of time series posteriors.
 ```{r}
-# Use the post_plot function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type'
-# argument, the user can select either CI to plot the 95% credible interval, or "draws" for 500 random draws of time series posteriors. 
 post_plot(inv_out = inv_out, parm = pco2, type = "CI")
 ```
 
+
+Use the post_plot_ind function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step 
+to be plotted must be specified. You can also turn on/off the median line in the plot. 
 ```{r}
-# Use the post_plot_ind function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step 
-# to be plotted must be specified. You can also turn on/off the median line in the plot. 
 post_plot_ind(inv_out = inv_out, parm = "pco2", tstep_age = 55956, show.median = TRUE)
 ```
 
+
+Other marine carbonate chemistry parameters can be calculated from any 2 marine carbonate chemistry parameters using 'carbchem' 
+function. This can be performed on the 'inv_out' object to quantify an additional carbonate chemistry variable.
 ```{r}
-# Other marine carbonate chemistry parameters can be calculated from any 2 marine carbonate chemistry parameters using 'carbchem' 
-# function. This can be performed on the 'inv_out' object to quantify an additional carbonate chemistry variable.
 pH <- inv_out$jout$BUGSoutput$median$pH 
 ccparm2.vec <- inv_out$jout$BUGSoutput$median$pco2
 temp <- inv_out$jout$BUGSoutput$median$tempC

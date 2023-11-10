@@ -20,7 +20,7 @@
 #' age_index(load_proxy = load_foram, age_units = "kyr", step_type = "regular", step_int = 10)
 #'
 #' @export
-age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "every", step_int = 10){
+age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "regular", step_int = 10){
 
   prox_in <- load_proxy[[1]]
   obs_type <- load_proxy[[2]]
@@ -41,7 +41,7 @@ age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "e
     prox_in_ai = transform(prox_in,ai=as.numeric(factor(round(age*-1))))
   } else if (step_type == "regular"){
     if (step_int > 0 & step_int < ((max(ages_prox) - min(ages_prox))/2)){
-      dt = rep(step_int, times = ((max(ages_prox)-min(ages_prox)) / step_int))
+      dt = rep(step_int, times = length(ages_prox))
       prox_in$ai = 1+ceiling((max(prox_in$age) - prox_in$age) / step_int)
       prox_in_ai = prox_in
       ages_prox[1] = round(min(ages_prox), digits = (-1 * nchar(step_int)))

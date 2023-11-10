@@ -45,6 +45,7 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
   psm_type <- priors_foram[[2]]
 
   # Combine data lists to be sent to jags
+  clean_obs <- clean_obs[clean_obs != "obs_type"]
   data <- append(clean_obs, clean_pri)
 
   # Determine forward PSM model file to use based on type of 2nd carb chem variable and prior

@@ -7,7 +7,7 @@
 age_index(
   load_proxy = load_foram,
   age_units = "kyr",
-  step_type = "every",
+  step_type = "regular",
   step_int = 10
 )
 }
