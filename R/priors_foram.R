@@ -300,16 +300,22 @@ priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 
     }
   }
 
+  if(clean_pri$pHpccorrsd <= 0 & clean_pri$pHpccorr != 0){
+    stop("You have set 'pHpccorrsd' to zero. Only do this if you intend to turn off the pH correction on Mg/Caforam 
+            entirely. If this is intended, you must also change 'pHpccorr' to zero")
+  }
+  
   if(clean_pri$pHpccorrsd <= 0){
-    warning("You have set 'pHpccorrsd' to zero. Only do this if you intend to turn off the pH correction on Mg/Caforam 
-            entirely. If this is intended, be sure to also change 'pHpccorr' to zero")
-    clean_pri$pHpccorrsd <- 1e-20
+    pHpccorrsd <- 1e-20
+  }
+  
+  if(clean_pri$seccal.sd <= 0 & clean_pri$seccal != 0){
+    stop("You have set 'seccal.sd' to zero. Only do this if you intend to turn off the diagenetic correction 
+            entirely. If this is intended, you must also change 'seccal' to zero")
   }
   
   if(clean_pri$seccal.sd <= 0){
-    warning("You have set 'seccal.sd' to zero. Only do this if you intend to turn off the diagenetic correction 
-            entirely. If this is intended, be sure to change 'seccal' to zero")
-    clean_pri$seccal.sd <- 1e-20
+    seccal.sd <- 1e-20
   }
   
   if(clean_pri$tempC.sd <= 0 | clean_pri$sal.sd <= 0 | clean_pri$press.sd <= 0 | clean_pri$d11Bsw.sd <= 0 | clean_pri$d18Osw.sd <= 0 |

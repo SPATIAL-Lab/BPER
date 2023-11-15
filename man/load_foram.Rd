@@ -4,16 +4,19 @@
 \alias{load_foram}
 \title{Checks and formats foraminiferal proxy data}
 \usage{
-load_foram(foram_data = foram_data)
+load_foram(foram_data, file.path = NULL, type = "Robj", sheet = NULL)
 }
 \arguments{
 \item{foram_data}{User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns
 should be organized as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The order matters. Current 
 d11Bspec options are: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values 
-in 'priors_in_foram.R'), or 'borate'}
+with 'priors_foram_adj' function), or 'borate'}
 
-\item{load.priors}{Logical. When TRUE, writes 'priors_in_foram.R' file to parent directory which can be modified 
-by the user. Defaults to TRUE.}
+\item{file.path}{If 'csv' or 'xlsx' is indicated for 'type' provide a character string path to file from directory.}
+
+\item{type}{Specify whether the foram_data is to be loaded from an R object 'Robj', a .csv file 'csv' or a .xlsx file 'xlsx'}
+
+\item{sheet}{If 'xlsx' is indicated for 'type' provide a character string of the sheet name to read in.}
 }
 \value{
 Returns list 'load_foram'. This list contains 'prox_in' data.frame which has been checked for data completeness
@@ -25,9 +28,10 @@ Function checks which data are present and whether measurement uncertainties are
 If ages or uncertainties are not included the function stops. Function flags 'incomplete'
 data object - i.e., missing Mg/Ca, or missing d18O, or missing d11B - but proceeds. Function also writes
 "priors_in_foram.R" to parent directory which needs to be modified before 'priors_foram' function is used.
-If no modifications to priors are needed, this can be turned off using 'load.priors' argument.
+If no modifications to priors are needed, this can be turned off using 'load.priors' argument. Dependencies: 'readxl'.
 }
 \examples{
 load_foram(foram_data)
+load_foram(file.path = "path/to/file.xlsx", type = "xlsx", sheet = "sheet1")
 
 }

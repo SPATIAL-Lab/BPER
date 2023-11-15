@@ -22,6 +22,7 @@ Depends:
 Imports: 
     mcmcplots,
     R2jags,
+    readxl,
     rjags
 URL: https://github.com/SPATIAL-Lab/BPER
 BugReports: https://github.com/SPATIAL-Lab/BPER/issues

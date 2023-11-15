@@ -5,24 +5,39 @@
 #' If ages or uncertainties are not included the function stops. Function flags 'incomplete'
 #' data object - i.e., missing Mg/Ca, or missing d18O, or missing d11B - but proceeds. Function also writes
 #' "priors_in_foram.R" to parent directory which needs to be modified before 'priors_foram' function is used.
-#' If no modifications to priors are needed, this can be turned off using 'load.priors' argument. 
+#' If no modifications to priors are needed, this can be turned off using 'load.priors' argument. Dependencies: 'readxl'.
 #'
 #' @param foram_data User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns
 #' should be organized as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The order matters. Current 
 #' d11Bspec options are: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values 
-#'in 'priors_in_foram.R'), or 'borate'
+#' with 'priors_foram_adj' function), or 'borate'
 #' 
-#' @param load.priors Logical. When TRUE, writes 'priors_in_foram.R' file to parent directory which can be modified 
-#' by the user. Defaults to TRUE.
+#' @param file.path If 'csv' or 'xlsx' is indicated for 'type' provide a character string path to file from directory. 
+#' 
+#' @param type Specify whether the foram_data is to be loaded from an R object 'Robj', a .csv file 'csv' or a .xlsx file 'xlsx'
+#' 
+#' @param sheet If 'xlsx' is indicated for 'type' provide a character string of the sheet name to read in. 
 #'
 #' @returns Returns list 'load_foram'. This list contains 'prox_in' data.frame which has been checked for data completeness
 #' and compatibility with other package functions and 'obs_type' which indicates which measurements are included.
 #'
 #' @examples
 #' load_foram(foram_data)
+#' load_foram(file.path = "path/to/file.xlsx", type = "xlsx", sheet = "sheet1")
 #' 
 #' @export
-load_foram <- function(foram_data = foram_data){
+load_foram <- function(foram_data, file.path = NULL, type = "Robj", sheet = NULL){
+  
+  if(type == "csv"){
+    foram_data = read.csv(file.path)
+  } else if(type =="xlsx"){
+    foram_data = readxl::read_xlsx(path = file.path, sheet = sheet)
+  } else if(type =="Robj"){
+    foram_data = foram_data
+  } else{
+    stop("Must specify 'csv' 'xlsx' or 'Robj' for 'type' argument.")
+  }
+  
   # Check that the correct number of columns are input - i.e. follows the template
   if (ncol(foram_data) == 8){
     prox_in = data.frame(foram_data)
