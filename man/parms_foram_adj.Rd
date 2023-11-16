@@ -2,7 +2,7 @@
 % Please edit documentation in R/parms_foram_adj.R
 \name{parms_foram_adj}
 \alias{parms_foram_adj}
-\title{Revises prior distributions}
+\title{Revises prior distributions and parameters}
 \usage{
 parms_foram_adj(parms2change = parms2change, change_values = change_values)
 }
@@ -24,37 +24,37 @@ for the specific study interval.
 The following is a list of the revisable parameters which define the prior distributions: \cr
 \cr
 --- S, T, P --- \cr
-\strong{'tempC.m'} and 'tempC.sd' are the mean and stdev for temperature in degrees C  \cr
-'sal.m' and 'sal.sd' are the mean and stdev for salinity  \cr
-'press.m' and 'press.sd' are the mean and stdev for presure in bar \cr
+\strong{'tempC.m'} and \strong{'tempC.sd'} are the mean and stdev for temperature in degrees C  \cr
+\strong{'sal.m'} and \strong{'sal.sd'} are the mean and stdev for salinity  \cr
+\strong{'press.m'} and \strong{'press.sd'} are the mean and stdev for presure in bar \cr
 \cr
 --- seawater composition --- \cr
-'d11Bsw.m' and 'd11Bsw.sd' are the mean and stdev for seawater d11B in per mille, SRM-951  \cr
-'d18Osw.m' and 'd18Osw.sd' are the mean and stdev for seawater d18O in per mille, VSMOW \cr
-'xca.m' and 'xca.sd' are the mean and stdev for Ca concentration of seawater in mmol/kg  \cr
-'xmg.m' and 'xmg.sd' are the mean and stdev for Mg concentration of seawater in mmol/kg  \cr
-'xso4.m' and 'xso4.sd' are the mean and stdev for SO4 concentration of seawater in mmol/kg  \cr
-'xca.lt' provides an option to prescribe linear change in Ca concentration of seawater as function of age, mmol/kg per kyr \cr
-'xmg.lt' provides an option to prescribe linear change in Mg concentration of seawater as function of age, mmol/kg per kyr \cr
-'xso4.lt' provides an option to prescribe linear change in SO4 concentration of seawater as function of age, mmol/kg per kyr \cr
+\strong{'d11Bsw.m'} and \strong{'d11Bsw.sd'} are the mean and stdev for seawater d11B in per mille, SRM-951  \cr
+\strong{'d18Osw.m'} and \strong{'d18Osw.sd'} are the mean and stdev for seawater d18O in per mille, VSMOW \cr
+\strong{'xca.m'} and \strong{'xca.sd'} are the mean and stdev for Ca concentration of seawater in mmol/kg  \cr
+\strong{'xmg.m'} and \strong{'xmg.sd'} are the mean and stdev for Mg concentration of seawater in mmol/kg  \cr
+\strong{'xso4.m'} and \strong{'xso4.sd'} are the mean and stdev for SO4 concentration of seawater in mmol/kg  \cr
+\strong{'xca.lt'} provides an option to prescribe linear change in Ca concentration of seawater as function of age, mmol/kg per kyr \cr
+\strong{'xmg.lt'} provides an option to prescribe linear change in Mg concentration of seawater as function of age, mmol/kg per kyr \cr
+\strong{'xso4.lt'} provides an option to prescribe linear change in SO4 concentration of seawater as function of age, mmol/kg per kyr \cr
 \cr
 --- diagenesis d18O correction --- \cr
-'seccal' and 'seccal.sd' are the mean and stdev for the percentage of secondary calcite \cr
-'d18Oseccal' is the estiamted d18O, per mille VPDB, of secondary calcite \cr
+\strong{'seccal'} and \strong{'seccal.sd'} are the mean and stdev for the percentage of secondary calcite \cr
+\strong{'d18Oseccal'} is the estiamted d18O, per mille VPDB, of secondary calcite \cr
 \cr
 --- Mg/Ca temp calibration parameters --- \cr
-'Hp.mean' and 'Hp.sd' are the mean and stdev for nonlinearity of the relationship b/w shell and Mg/Casw \cr
-'Bmod.mean' and 'Bmod.sd' are the mean and stdev for modern, pre-corrected, pre-exponential constant in Mg/Ca-SST calibration \cr
-'A.mean' and 'A.sd' are the mean and stdev for the exponential constant in Mg/Ca-SST calibration \cr
-'pHpccorr' and 'pHpccorrsd' are the mean and stdev for the pH correction on Mg/Caf in percent per tenth pH unit \cr
+\strong{'Hp.mean'} and \strong{'Hp.sd'} are the mean and stdev for nonlinearity of the relationship b/w shell and Mg/Casw \cr
+\strong{'Bmod.mean'} and \strong{'Bmod.sd'} are the mean and stdev for modern, pre-corrected, pre-exponential constant in Mg/Ca-SST calibration \cr
+\strong{'A.mean'} and \strong{'A.sd'} are the mean and stdev for the exponential constant in Mg/Ca-SST calibration \cr
+\strong{'pHpccorr'} and \strong{'pHpccorrsd'} are the mean and stdev for the pH correction on Mg/Caf in percent per tenth pH unit \cr
 \cr
 --- d11B vital effect --- \cr
-'m.custom', 'm.customsd', 'c.custom', and 'c.customsd' specify 'custom' vital effect slope and intercept  \cr
-'Grub.coff', 'Tsac.coff', 'Ouni.coff', and 'borate.coff' are the 'c' intercept offsets for each modern species 'c' value; leave '0' for modern \cr
+\strong{'m.custom'}, \strong{'m.customsd'}, \strong{'c.custom'}, and \strong{'c.customsd'} specify 'custom' vital effect slope and intercept  \cr
+\strong{'Grub.coff'}, \strong{'Tsac.coff'}, \strong{'Ouni.coff'}, and \strong{'borate.coff'} are the 'c' intercept offsets for each modern species 'c' value; leave '0' for modern \cr
 \cr
 --- carboante chemistry --- \cr
-'pH.u' and 'pH.l' are the upper and lower bounds on uniform distribution for time step 1 in total scale \cr
-'carbchem2.m' and 'carbchem2.sd' are the mean and stdev for 2nd carbonate chemistry variable for time step 1*.  \cr
+\strong{'pH.u'} and \strong{'pH.l'} are the upper and lower bounds on uniform distribution for time step 1 in total scale \cr
+\strong{'carbchem2.m'} and \strong{'carbchem2.sd'} are the mean and stdev for 2nd carbonate chemistry variable for time step 1*.  \cr
 \cr
 Carbonate chemistry variables in the following units: \cr
 pH = 'total scale' equivalent  \cr
