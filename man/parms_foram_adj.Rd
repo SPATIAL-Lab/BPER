@@ -7,7 +7,7 @@
 parms_foram_adj(parms2change = parms2change, change_values = change_values)
 }
 \arguments{
-\item{parms2change}{Provide a vector of character strings specifying which parameters to revise. The revisable parameters are 
+\item{parms2change}{Provide a vector of character strings specifying which parameters to revise. The revisable parameters are
 defined in 'Details'.}
 
 \item{change_values}{Provide a vector of values which correspond to 'priors2change' vector of parameter names.}
@@ -24,7 +24,7 @@ for the specific study interval.
 The following is a list of the revisable parameters which define the prior distributions: \cr
 \cr
 --- S, T, P --- \cr
-**'tempC.m'** and 'tempC.sd' are the mean and stdev for temperature in degrees C  \cr
+\strong{'tempC.m'} and 'tempC.sd' are the mean and stdev for temperature in degrees C  \cr
 'sal.m' and 'sal.sd' are the mean and stdev for salinity  \cr
 'press.m' and 'press.sd' are the mean and stdev for presure in bar \cr
 \cr
@@ -46,7 +46,7 @@ The following is a list of the revisable parameters which define the prior distr
 'Hp.mean' and 'Hp.sd' are the mean and stdev for nonlinearity of the relationship b/w shell and Mg/Casw \cr
 'Bmod.mean' and 'Bmod.sd' are the mean and stdev for modern, pre-corrected, pre-exponential constant in Mg/Ca-SST calibration \cr
 'A.mean' and 'A.sd' are the mean and stdev for the exponential constant in Mg/Ca-SST calibration \cr
-'pHpccorr' and 'pHpccorrsd' are the mean and stdev for the pH correction on Mg/Caf in % per tenth pH unit \cr
+'pHpccorr' and 'pHpccorrsd' are the mean and stdev for the pH correction on Mg/Caf in percent per tenth pH unit \cr
 \cr
 --- d11B vital effect --- \cr
 'm.custom', 'm.customsd', 'c.custom', and 'c.customsd' specify 'custom' vital effect slope and intercept  \cr

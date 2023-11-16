@@ -29,7 +29,7 @@
 #' 'Hp.mean' and 'Hp.sd' are the mean and stdev for nonlinearity of the relationship b/w shell and Mg/Casw \cr
 #' 'Bmod.mean' and 'Bmod.sd' are the mean and stdev for modern, pre-corrected, pre-exponential constant in Mg/Ca-SST calibration \cr
 #' 'A.mean' and 'A.sd' are the mean and stdev for the exponential constant in Mg/Ca-SST calibration \cr
-#' 'pHpccorr' and 'pHpccorrsd' are the mean and stdev for the pH correction on Mg/Caf in % per tenth pH unit \cr
+#' 'pHpccorr' and 'pHpccorrsd' are the mean and stdev for the pH correction on Mg/Caf in percent per tenth pH unit \cr
 #' \cr
 #' --- d11B vital effect --- \cr
 #' 'm.custom', 'm.customsd', 'c.custom', and 'c.customsd' specify 'custom' vital effect slope and intercept  \cr
@@ -49,6 +49,7 @@
 #' *Note that variable type, 'cc2ndparm.vt', should be specified in arguments in 'foram_priors' function. These values will be used if
 #' prior type, i.e. 'cc2ndparm.pt', is set to 't1' in 'foram_priors' argument. These values will not be used if prior type,
 #' i.e. 'cc2ndparm.pt', is set to 'ts' in 'foram_priors' argument.
+#' @md
 #'
 #' @param parms2change Provide a vector of character strings specifying which parameters to revise. The revisable parameters are 
 #' defined in 'Details'. 
