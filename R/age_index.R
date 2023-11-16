@@ -20,7 +20,7 @@
 #' age_index(load_proxy = load_foram, age_units = "kyr", step_type = "regular", step_int = 10)
 #'
 #' @export
-age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "regular", step_int = 10){
+age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "every", step_int){
 
   prox_in <- load_proxy[[1]]
   obs_type <- load_proxy[[2]]
@@ -55,7 +55,7 @@ age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "r
     stop("Must specify time step type: 'regular' or 'every'")
   }
 
-  age_index <- list(prox_in_ai, ages_prox, dt, obs_type)
+  age_index <- list("prox_in_ai" = prox_in_ai, "ages_prox" = ages_prox, "dt" = dt, "obs_type" = obs_type)
   class(age_index) = "age_index"
   return(age_index)
 }

@@ -7,8 +7,8 @@
 age_index(
   load_proxy = load_foram,
   age_units = "kyr",
-  step_type = "regular",
-  step_int = 10
+  step_type = "every",
+  step_int
 )
 }
 \arguments{

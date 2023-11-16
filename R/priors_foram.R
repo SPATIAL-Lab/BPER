@@ -8,8 +8,8 @@
 #' reflect senstivities to major ion concentrations of Ca, Mg and SO4 in the proxy system model. Dependencies: 
 #' 'rjags' and 'R2jags'.
 #'
-#' @param priors Specify the path to the 'priors_in_foram.R' script used to define all the prior distributions. Defaults 
-#' to system data file if no path is provided. 
+#' @param parms_foram_adj Specify the R object or character string file path to configuration script used to define parameters 
+#' and priors. Defaults to system data file if no object or path is provided. 
 #'
 #' @param age_index User inputs the list that is returned by the 'age_index'. Defaults to 'age_index'.
 #'
@@ -21,9 +21,6 @@
 #'
 #' @param cc2ndparmTS If 'ts' is selected for 'cc2ndparm.pt', user must provide time series R data object
 #' consisting of 3 columns of data: age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable.
-#'
-#' @param save.output Logical. Specify TRUE if you want prior distributions to be saved to a 'model_out' folder
-#' in the directory. Defaults to FALSE.
 #'
 #' @returns Returns list 'priors_foram'. This list contains a list 'clean_pri' which contains all of the prior
 #' information used in the model inversion, and 'psm_type' which indicates which proxy model script to use.
@@ -38,6 +35,9 @@ priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 
   # Load the prior values from user or default package data
   if(is.null(parms_foram_adj)){
     parms_foram <- system.file("extdata", "parms_in_foram.R", package = "BPER")
+    source(parms_foram)
+  } else if(is.character(parms_foram_adj)){
+    parms_foram <- parms_foram_adj
     source(parms_foram)
   } else
   parms_foram <- parms_foram_adj
@@ -325,7 +325,7 @@ priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 
   }
   
   psm_type <- paste(cc2ndparm.vt, cc2ndparm.pt, sep = "_")
-  priors_foram <- list(clean_pri, psm_type)
+  priors_foram <- list("clean_pri" = clean_pri, "psm_type" = psm_type)
   class(priors_foram) = "priors_foram"
   return(priors_foram)
 }

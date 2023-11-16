@@ -4,17 +4,14 @@
 \alias{load_foram}
 \title{Checks and formats foraminiferal proxy data}
 \usage{
-load_foram(foram_data, file.path = NULL, type = "Robj", sheet = NULL)
+load_foram(foram_data, type = "Robj", sheet = NULL)
 }
 \arguments{
 \item{foram_data}{User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns
 should be organized as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The order matters. Current 
 d11Bspec options are: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values 
-with 'priors_foram_adj' function), or 'borate'}
-
-\item{file.path}{If 'csv' or 'xlsx' is indicated for 'type' provide a character string path to file from directory.}
-
-\item{type}{Specify whether the foram_data is to be loaded from an R object 'Robj', a .csv file 'csv' or a .xlsx file 'xlsx'}
+with 'priors_foram_adj' function), or 'borate'. If 'csv' or 'xlsx' is to be used instead of R object, provide a 
+character string path to file from directory.}
 
 \item{sheet}{If 'xlsx' is indicated for 'type' provide a character string of the sheet name to read in.}
 }
@@ -32,6 +29,5 @@ If no modifications to priors are needed, this can be turned off using 'load.pri
 }
 \examples{
 load_foram(foram_data)
-load_foram(file.path = "path/to/file.xlsx", type = "xlsx", sheet = "sheet1")
 
 }

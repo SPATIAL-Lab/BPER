@@ -38,7 +38,7 @@ Take the returned list from 'load_foram' and use it for 'load_proxy' argument in
 used in the data set ('kyr' or 'Myr'), the time step type ('step_type'): 'regular' for evenly spaced intervals or 'every' for a time step
 for every unique age in the data set. If 'regular' is specified, specify the step interval ('step_int'). 
 ```{r}
-age_index <- age_index(load_proxy = load_foram, age_units = 'kyr', step_type = 'regular', step_int = 10)
+age_index <- age_index(load_proxy = load_foram, age_units = 'kyr', step_type = 'every')
 ```
 
 
@@ -48,19 +48,8 @@ clean_obs <- clean_foram(age_index = age_index)
 ```
 
 
-Revise and load user accessible parameters for the MCMC inversion. Access the package data file 'priors_in_foram.R'. This will open 
-a '.R' script file in an editor window (should default to RStudio if using RStudio). This script contains the default values for 
-a number of parameters, including prior distributions. Look through the script and documentation to determine which values to 
-adjust. A list and description of editable parameters is also provided in the help documentation of the function 'parms_foram_adj'. 
-```{r}
-file.edit(system.file("extdata", "parms_in_foram.R", package = "BPER"))
-```
-
-
-Any of the values listed in the above '.R' script can be revised using 'parms_foram_adjust' function. There are two arguments in this 
-function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values.
-For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. To 
-demonstrate, we will adjust the temperature and d11Bsw prior distribution parameters.
+Many of the parameter values, including those that define priors,can be revised using 'parms_foram_adjust' function. There are two arguments in this function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values.
+The user-changeable parameters are listed in the helkp documentation of this function. For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. To demonstrate, we will adjust the temperature and d11Bsw prior distribution parameters.
 ```{r}
 parm_names <- c("tempC.m", "tempC.sd", "d11Bsw.m", "d11Bsw.sd")
 parm_values <- c(23, 4, 38.35, 0.75)
@@ -82,7 +71,7 @@ interpolated to create a time-continuous record. 'priors_foram' can take several
 dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), c(2.320, 2.328, 2.405, 2.440, 2.481, 2.500), 
                       c(0.15, 0.15, 0.15, 0.15, 0.15, 0.15)) 
 
-priors_foram <- priors_foram(parms_forams_adj = parms_forams_adj, age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', 
+priors_foram <- priors_foram(parms_foram_adj = parms_foram_adj, age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', 
                              cc2ndparmTS = dic_pri)
 ```
 
@@ -98,9 +87,6 @@ parameters 'Rhat' and 'n.eff' in 'inv_out$jout$BUGSoutput$summary' to make sure 
 inv_out <- run_inversion(clean_obs = clean_obs, priors_foram = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
                           n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1)
-
-
-View(inv_out$jout$BUGSoutput$summary)
 ```
 
 
@@ -114,7 +100,7 @@ trace_plot(inv_out = inv_out, parm = "pco2", n = 3)
 Use the post_plot function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type'
 argument, the user can select either CI to plot the 95% credible interval, or "draws" for 500 random draws of time series posteriors.
 ```{r}
-post_plot(inv_out = inv_out, parm = pco2, type = "CI")
+post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
 ```
 
 

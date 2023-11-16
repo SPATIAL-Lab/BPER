@@ -60,13 +60,13 @@ post_plot_ind <- function(inv_out = inv_out, parm = "pco2", tstep_age, show.medi
     match(tstep_age, ages_prox)
     post_plot_ind <- plot(density(parm_out[,match(tstep_age, ages_prox)]), main = paste(tstep_age, "ka"), xlab = paste(parm, units), col = "black", lwd=1.5)
     polygon(density(parm_out[,match(tstep_age, ages_prox)]), col = rgb(0,0,0, alpha = 0.4))
-    if(show.median == TRUE){
+    if(isTRUE(show.median)){
       abline(v=median(parm_out[,match(tstep_age, ages_prox)]), col="deepskyblue4", lwd =1.5)
     }
   } else if(ncol(parm_out) == 1){
     post_plot_ind <- plot(density(parm_out), main ="", xlab = paste(parm, units), col = "black", lwd=1.5)
     polygon(density(parm_out), col = rgb(0,0,0, alpha = 0.4))
-    if(show.median == TRUE){
+    if(isTRUE(show.median)){
       abline(v=median(parm_out), col="deepskyblue4", lwd =1.5)
     }
   }
