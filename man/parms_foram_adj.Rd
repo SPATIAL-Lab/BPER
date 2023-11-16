@@ -52,7 +52,7 @@ The following is a list of the revisable parameters which define the prior distr
 \strong{'m.custom'}, \strong{'m.customsd'}, \strong{'c.custom'}, and \strong{'c.customsd'} specify 'custom' vital effect slope and intercept  \cr
 \strong{'Grub.coff'}, \strong{'Tsac.coff'}, \strong{'Ouni.coff'}, and \strong{'borate.coff'} are the 'c' intercept offsets for each modern species 'c' value; leave '0' for modern \cr
 \cr
---- carboante chemistry --- \cr
+--- carbonate chemistry --- \cr
 \strong{'pH.u'} and \strong{'pH.l'} are the upper and lower bounds on uniform distribution for time step 1 in total scale \cr
 \strong{'carbchem2.m'} and \strong{'carbchem2.sd'} are the mean and stdev for 2nd carbonate chemistry variable for time step 1*.  \cr
 \cr

@@ -35,7 +35,7 @@
 #' **'m.custom'**, **'m.customsd'**, **'c.custom'**, and **'c.customsd'** specify 'custom' vital effect slope and intercept  \cr
 #' **'Grub.coff'**, **'Tsac.coff'**, **'Ouni.coff'**, and **'borate.coff'** are the 'c' intercept offsets for each modern species 'c' value; leave '0' for modern \cr
 #' \cr
-#' --- carboante chemistry --- \cr
+#' --- carbonate chemistry --- \cr
 #' **'pH.u'** and **'pH.l'** are the upper and lower bounds on uniform distribution for time step 1 in total scale \cr
 #' **'carbchem2.m'** and **'carbchem2.sd'** are the mean and stdev for 2nd carbonate chemistry variable for time step 1*.  \cr
 #' \cr
