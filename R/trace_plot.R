@@ -17,7 +17,9 @@
 #' trace_plot(inv_out = inv_out, parm = "pco2", n = 1)
 #'
 #' @export
-trace_plot <- function(inv_out = inv_out, parm = "pco2", n = 1){
+trace_plot <- function(inv_out = inv_out, 
+                       parm = "pco2", 
+                       n = 1){
 
   if(length(inv_out) != 3){
     stop("'inv_out' must be a list containing 3 elements from 'inv_out' function")

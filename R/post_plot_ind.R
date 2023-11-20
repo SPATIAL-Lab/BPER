@@ -20,7 +20,10 @@
 #' post_plot_ind(inv_out = inv_out, parm = "pco2", tstep_age, show.median = FALSE)
 #'
 #' @export
-post_plot_ind <- function(inv_out = inv_out, parm = "pco2", tstep_age, show.median = FALSE){
+post_plot_ind <- function(inv_out = inv_out, 
+                          parm = "pco2", 
+                          tstep_age, 
+                          show.median = FALSE){
 
   if(length(inv_out) != 3){
     stop("'inv_out' must be a list containing 3 elements from 'inv_out' function")

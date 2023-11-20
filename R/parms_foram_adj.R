@@ -62,7 +62,8 @@
 #' parms_foram_adj(parms2change = parms2change, change_values = change_values)
 #'
 #' @export
-parms_foram_adj <- function(parms2change = parms2change, change_values = change_values){
+parms_foram_adj <- function(parms2change = parms2change, 
+                            change_values = change_values){
   
   if(length(parms2change) != length(change_values)){
     stop("Length of 'parms2change' vector much match that of 'change_values' vector")

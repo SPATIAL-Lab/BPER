@@ -22,7 +22,9 @@
 #' load_foram(foram_data)
 #' 
 #' @export
-load_foram <- function(foram_data, type = "Robj", sheet = NULL){
+load_foram <- function(foram_data, 
+                       type = "Robj", 
+                       sheet = NULL){
   
   if(is.character(foram_data)){
     if(grepl(".csv", foram_data, fixed = TRUE)){

@@ -34,7 +34,7 @@ The following is a list of the revisable parameters (default values in parenthes
 \strong{'xca.m'} (21.41) and \strong{'xca.sd'} (0.5) are the mean and stdev for Ca concentration of seawater in mmol/kg  \cr
 \strong{'xmg.m'} (68.51) and \strong{'xmg.sd'} (0.5) are the mean and stdev for Mg concentration of seawater in mmol/kg  \cr
 \strong{'xso4.m'} (14) and \strong{'xso4.sd'} (0.5) are the mean and stdev for SO4 concentration of seawater in mmol/kg  \cr
-\strong{'xca.lt'} (-1.9e-4)provides an option to prescribe linear change in Ca concentration of seawater as function of age, mmol/kg per kyr \cr
+\strong{'xca.lt'} (-1.9e-4) provides an option to prescribe linear change in Ca concentration of seawater as function of age, mmol/kg per kyr \cr
 \strong{'xmg.lt'} (0) provides an option to prescribe linear change in Mg concentration of seawater as function of age, mmol/kg per kyr \cr
 \strong{'xso4.lt'} (0) provides an option to prescribe linear change in SO4 concentration of seawater as function of age, mmol/kg per kyr \cr
 \cr

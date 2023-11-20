@@ -30,7 +30,11 @@
 #' cc2ndparm.pt = 'ts', cc2ndparmTS = cc2ndparmTS, save.output = FALSE)
 #'
 #' @export
-priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', cc2ndparmTS){
+priors_foram <- function(parms_foram_adj, 
+                         age_index = age_index, 
+                         cc2ndparm.vt = 'dic', 
+                         cc2ndparm.pt = 'ts', 
+                         cc2ndparmTS){
 
   # Load the prior values from user or default package data
   if(is.null(parms_foram_adj)){

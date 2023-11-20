@@ -36,9 +36,14 @@
 #' n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, save.output = FALSE)
 #'
 #' @export
-run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
+run_inversion <- function(clean_obs = clean_obs, 
+                          priors_foram = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
-                          n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, parallel = FALSE){
+                          n.iter = 10000, 
+                          n.chains = 3, 
+                          n.burnin = 3000, 
+                          n.thin = 1, 
+                          parallel = FALSE){
 
   clean_pri <- priors_foram[[1]]
   psm_type <- priors_foram[[2]]

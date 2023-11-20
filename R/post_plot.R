@@ -17,7 +17,9 @@
 #' post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
 #'
 #' @export
-post_plot <- function(inv_out = inv_out, parm = "pco2", type = "CI"){
+post_plot <- function(inv_out = inv_out, 
+                      parm = "pco2", 
+                      type = "CI"){
 
   if(length(inv_out) != 3){
     stop("'inv_out' must be a list containing 3 elements from 'inv_out' function")

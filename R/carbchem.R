@@ -34,8 +34,16 @@
 #' xca = xca, xmg = xmg, xso4 = xso4)
 #'
 #' @export
-carbchem <- function(ccparm2 = "dic", ccout = "pco2", pH = pH, ccparm2.vec = ccparm2.vec, temp = temp, sal = sal, press = press,
-                     xca = xca, xmg = xmg, xso4 = xso4){
+carbchem <- function(ccparm2 = "dic", 
+                     ccout = "pco2", 
+                     pH = pH, 
+                     ccparm2.vec = ccparm2.vec, 
+                     temp = temp, 
+                     sal = sal, 
+                     press = press,
+                     xca = xca, 
+                     xmg = xmg, 
+                     xso4 = xso4){
 
   if(length(pH) != length(ccparm2.vec) | length(pH) != length(temp) | length(pH) != length(sal) | length(pH) != length(press) |
      length(pH) != length(xca) | length(pH) != length(xmg) | length(pH) != length(xso4)){
