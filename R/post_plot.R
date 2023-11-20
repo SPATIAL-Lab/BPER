@@ -76,8 +76,10 @@ post_plot <- function(inv_out = inv_out, parm = "pco2", type = "CI"){
     polygon(c(ages_prox, rev(ages_prox)), c(parm_sum[,4], rev(parm_sum[,8])), col = "gray", lwd = 0.5)
     lines(ages_prox, parm_med, col="red", lwd=1.5)
     legend(x = "topleft", fill = c("gray", "red"), legend = c("95% credible interval", "median of posterior distributions"))
-  } else
+  } else{
     stop("Must specify type of plot to be drawn, either 'CI' for 50% and 95% confidence interval or 'draws' for 500 draws of time series posteriors")
+  }
+    
 
   return(post_plot)
 }

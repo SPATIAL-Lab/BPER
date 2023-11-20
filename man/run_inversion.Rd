@@ -12,7 +12,8 @@ run_inversion(
   n.iter = 10000,
   n.chains = 3,
   n.burnin = 3000,
-  n.thin = 1
+  n.thin = 1,
+  parallel = FALSE
 )
 }
 \arguments{
@@ -35,11 +36,10 @@ to '3000'.}
 \item{n.thin}{Provide the factor by which to thin the output data, i.e., '10' only saves every 10th iteration. See
 'jags' user manual for details. Defaults to '1'.}
 
+\item{parallel}{Logical. Specify TRUE if you want to enable parallel processing. Defaults to FALSE.}
+
 \item{priors}{User provides the list that is returned by 'priors_foram', 'priors_phyto', 'priors_paleosol', or
 'priors_plants' function. Defauts to 'priors_foram'.}
-
-\item{save.output}{Logical. Specify TRUE if you want model output to be saved to a 'model_out' folder in the directory.
-Defaults to FALSE.}
 }
 \value{
 Returns list 'inv_out' with 'jout' MCMC data object, a vector of timestep ages 'ages_prox', and a list of 

@@ -29,10 +29,12 @@ load_foram <- function(foram_data, type = "Robj", sheet = NULL){
       foram_data = read.csv(foram_data)
     } else if(grepl(".xlsx", foram_data, fixed = TRUE)){
       foram_data = readxl::read_xlsx(path = file.path, sheet = sheet)
-    } else
+    } else{
       stop("Can only specify a file path to .csv or .xlsx file")
-  } else
+    }
+  } else{
     foram_data = foram_data
+  }
   
   # Check that the correct number of columns are input - i.e. follows the template
   if (ncol(foram_data) == 8){

@@ -25,8 +25,7 @@
 #' @param n.thin Provide the factor by which to thin the output data, i.e., '10' only saves every 10th iteration. See
 #' 'jags' user manual for details. Defaults to '1'.
 #'
-#' @param save.output Logical. Specify TRUE if you want model output to be saved to a 'model_out' folder in the directory.
-#' Defaults to FALSE.
+#' @param parallel Logical. Specify TRUE if you want to enable parallel processing. Defaults to FALSE.
 #'
 #' @returns Returns list 'inv_out' with 'jout' MCMC data object, a vector of timestep ages 'ages_prox', and a list of 
 #' the saved parameters 'save.parms'. 'jout' is the same output list that is generated when you call the 'jags' function.
@@ -39,7 +38,7 @@
 #' @export
 run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
-                          n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1){
+                          n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, parallel = FALSE){
 
   clean_pri <- priors_foram[[1]]
   psm_type <- priors_foram[[2]]
@@ -80,7 +79,7 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
     model.string = paste(chunk1, chunk2_omegac, chunk3_t1)
   } else if(psm_type == 'omegac_ts'){
     model.string = paste(chunk1, chunk2_omegac, chunk3_ts)
-  }else{
+  } else{
     stop("Type of PSM not specified. 'psm_type' should be assigned first using 'priors_...' function")
   }
   
@@ -89,9 +88,15 @@ run_inversion <- function(clean_obs = clean_obs, priors_foram = priors_foram,
   writeLines(model.string, con = txtPath)
   
   # Call the jags function from R2jags and run the inversion; store output in 'inv_out' data object
-  jout = R2jags::jags(model.file = txtPath, parameters.to.save = save.parms,
-                      data = data, inits = NULL, n.chains = n.chains, n.iter = n.iter,
-                      n.burnin = n.burnin, n.thin = n.thin)
+  if(isTRUE(parallel)){
+    jout = R2jags::jags.parallel(model.file = txtPath, parameters.to.save = save.parms,
+                        data = data, inits = NULL, n.chains = n.chains, n.iter = n.iter,
+                        n.burnin = n.burnin, n.thin = n.thin)
+  } else{
+    jout = R2jags::jags(model.file = txtPath, parameters.to.save = save.parms,
+                       data = data, inits = NULL, n.chains = n.chains, n.iter = n.iter,
+                       n.burnin = n.burnin, n.thin = n.thin)
+  }
 
   ages_prox <- clean_obs[["ages.prox"]]
   inv_out = list("jout" = jout, "ages_prox" = ages_prox, "save.parms" = save.parms)

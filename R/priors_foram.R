@@ -39,9 +39,11 @@ priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 
   } else if(is.character(parms_foram_adj)){
     parms_foram <- parms_foram_adj
     source(parms_foram)
-  } else
-  parms_foram <- parms_foram_adj
-  list2env(parms_foram,globalenv())
+  } else{
+    parms_foram <- parms_foram_adj
+    list2env(parms_foram,globalenv())
+  }
+  
 
   # Load ages_prox from 'age_index' object - product of age_index function
   ages_prox <- age_index[[2]]

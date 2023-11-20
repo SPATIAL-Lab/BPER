@@ -20,7 +20,7 @@
 #' age_index(load_proxy = load_foram, age_units = "kyr", step_type = "regular", step_int = 10)
 #'
 #' @export
-age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "every", step_int){
+age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "every", step_int = 10){
 
   prox_in <- load_proxy[[1]]
   obs_type <- load_proxy[[2]]
