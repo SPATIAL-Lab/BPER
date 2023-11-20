@@ -19,6 +19,7 @@ clean_foram <- function(age_index = age_index){
   ages_prox <- age_index[[2]]
   dt <- age_index[[3]]
   obs_type <- age_index[[4]]
+  step_type <- age_index[[5]]
 
 
   if(!inherits(dt, "numeric") | length(dt) < 2){
@@ -69,6 +70,10 @@ clean_foram <- function(age_index = age_index){
   ai.all = c(ai.d11B, ai.mgca, ai.d18O)
   ai.prox = unique(ai.all)
   ai.prox = sort(ai.prox, decreasing = FALSE)
+  
+  if (step_type == "regular"){
+    ai.prox = seq(from = 1, to = length(dt) + 1, by = 1)
+  }
 
   clean_obs = list("ai.d11B" = ai.d11B, "si.d11B" = si.d11B, "d11Bf.data" = d11Bf.data, "d11Bfu.data" = d11Bfu.data, "d11Bf.fs" = d11Bf.fs,
                    "ai.mgca" = ai.mgca, "mgcaf.data" = mgcaf.data, "mgcafu.data" = mgcafu.data, "mgcaf.fs" = mgcaf.fs,

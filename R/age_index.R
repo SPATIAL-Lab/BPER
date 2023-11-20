@@ -55,7 +55,7 @@ age_index <- function(load_proxy = load_foram, age_units = "kyr", step_type = "e
     stop("Must specify time step type: 'regular' or 'every'")
   }
 
-  age_index <- list("prox_in_ai" = prox_in_ai, "ages_prox" = ages_prox, "dt" = dt, "obs_type" = obs_type)
+  age_index <- list("prox_in_ai" = prox_in_ai, "ages_prox" = ages_prox, "dt" = dt, "obs_type" = obs_type, "step_type" = step_type)
   class(age_index) = "age_index"
   return(age_index)
 }
