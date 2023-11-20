@@ -306,7 +306,7 @@ priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 
   }
   
   if(clean_pri$pHpccorrsd <= 0){
-    pHpccorrsd <- 1e-20
+    clean_pri$pHpccorrsd <- 1e-20
   }
   
   if(clean_pri$seccal.sd <= 0 & clean_pri$seccal != 0){
@@ -315,7 +315,7 @@ priors_foram <- function(parms_foram_adj, age_index = age_index, cc2ndparm.vt = 
   }
   
   if(clean_pri$seccal.sd <= 0){
-    seccal.sd <- 1e-20
+    clean_pri$seccal.sd <- 1e-20
   }
   
   if(clean_pri$tempC.sd <= 0 | clean_pri$sal.sd <= 0 | clean_pri$press.sd <= 0 | clean_pri$d11Bsw.sd <= 0 | clean_pri$d18Osw.sd <= 0 |
