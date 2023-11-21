@@ -4,7 +4,7 @@
 \alias{post_plot}
 \title{Plots time series parameter posteriors}
 \usage{
-post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
+post_plot(inv_out = inv_out, parm = "dic", type = "CI")
 }
 \arguments{
 \item{inv_out}{User inputs the MCMC data object that is returned by the 'run_inversion' function. Defaults to 'inv_out'.}

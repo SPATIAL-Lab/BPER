@@ -22,7 +22,7 @@
 #' @export
 age_index <- function(load_proxy = load_foram, 
                       age_units = "kyr", 
-                      step_type = "every", 
+                      step_type = "regular", 
                       step_int = 10){
 
   prox_in <- load_proxy[[1]]
@@ -51,6 +51,7 @@ age_index <- function(load_proxy = load_foram,
       for (i in 2:(length(dt)+1)){
         ages_prox[i] = dt[i-1] + ages_prox[i-1]
       }
+      ages_prox = sort(ages_prox, decreasing = TRUE)
     } else{
       stop("Must specify positive value less than half the length of the total time interval for 'step_int' in function arguments if regular time step type is selected")
     }

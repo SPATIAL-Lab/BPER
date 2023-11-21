@@ -18,7 +18,7 @@
 #'
 #' @export
 post_plot <- function(inv_out = inv_out, 
-                      parm = "pco2", 
+                      parm = "dic", 
                       type = "CI"){
 
   if(length(inv_out) != 3){
@@ -54,7 +54,7 @@ post_plot <- function(inv_out = inv_out,
   } else if(parm == "d18Osw"){
     units = "(\u2030 VSMOW)"
   } else if(parm == "tempC"){
-    units = expression(paste("(", degree, "C", ")"))
+    units = "(\u00B0C)" 
   } else if(parm == "xca" | parm == "xso4" | parm == "xmg"){
     units = "(mmol/kg)"
   }
