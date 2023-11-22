@@ -16,9 +16,9 @@ defined in 'Details'.}
 Returns list 'parms_foram_adj' which contains all of the values, revised or otherwise, for revisable parameters.
 }
 \description{
-This function allows users to pull in the default system file which defines all user-accessible parameters, including priors,
-and revise it as they see fit. This is a highly recommended step as prior distributions should reflect prior knowledge
-for the specific study interval.
+This function allows users to revise parameters in the default system file which define prior distributions. This is a highly
+recommended step as prior distributions should reflect prior knowledge for the specific study interval. Defaults values for
+these revisable parameters reflect late Paleocene to early Eocene in mid to low latitude.
 }
 \details{
 The following is a list of the revisable parameters (default values in parentheses) which define the prior distributions: \cr

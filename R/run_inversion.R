@@ -104,7 +104,7 @@ run_inversion <- function(clean_obs = clean_obs,
   }
 
   ages_prox <- clean_obs[["ages.prox"]]
-  inv_out = list("jout" = jout, "ages_prox" = ages_prox, "save.parms" = save.parms)
+  inv_out = list("jout" = jout, "ages_prox" = ages_prox, "save.parms" = save.parms, "priors" = clean.pri)
   
   summarydf <- data.frame(jout$BUGSoutput$summary)
   

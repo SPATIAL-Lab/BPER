@@ -48,11 +48,10 @@ clean_obs <- clean_foram(age_index = ai_out)
 ```
 
 
-Many of the parameter values, including those that define priors,can be revised using 'parms_foram_adjust' function. There are two arguments in this function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values.
-The user-changeable parameters are listed in the help documentation of this function. For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. To demonstrate, we will adjust the temperature and d11Bsw prior distribution parameters.
+Many of the parameter values, including those that define priors, can be revised using 'parms_foram_adjust' function. There are two arguments in this function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values. The user-changeable parameters are listed in the help documentation of this function (type ?parms_foram_adj). For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. To demonstrate, we will adjust the parameters which define the distribution of the % of secondary calcite for the diagenetic correction on d18O.
 ```{r}
-parm_names <- c("tempC.m", "tempC.sd", "d11Bsw.m", "d11Bsw.sd")
-parm_values <- c(23, 4, 38.35, 0.75)
+parm_names <- c("seccal", "seccal.sd")
+parm_values <- c(60, 5)
 
 parms_foram_adj <- parms_foram_adj(parms2change = parm_names, change_values = parm_values)
 ```

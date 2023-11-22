@@ -4,7 +4,15 @@
 \alias{post_plot_ind}
 \title{Plots parameter posterior for a single time step}
 \usage{
-post_plot_ind(inv_out = inv_out, parm = "pco2", tstep_age, show.median = FALSE)
+post_plot_ind(
+  inv_out = inv_out,
+  parm = "pH",
+  tstep_age,
+  show.prior = TRUE,
+  show.median = FALSE,
+  show.legend = TRUE,
+  leg.pos = "topleft"
+)
 }
 \arguments{
 \item{inv_out}{User inputs the MCMC data object that is returned by the 'run_inversion' function. Defaults to 'inv_out'.}
@@ -15,8 +23,16 @@ function. Defaults to 'pco2'.}
 \item{tstep_age}{Indicate which time step age is desired if the parameter is time-dependent. This age much match one of
 the input ages, compiled in 'ages_prox' object. No default.}
 
+\item{show.prior}{Logical. Specify TRUE if you would like the prior distribution plotted along with the posterior. For 
+time-dependent variables, the sampled distribution for time step 1 is shown. Defaults to TRUE.}
+
 \item{show.median}{Logical. Specify TRUE if you would like a line drawn through the median of the distribution. Defaults
 to FALSE.}
+
+\item{show.legend}{Logical. Specify TRUE if you would like a legend in the plot. Defaults to TRUE.}
+
+\item{leg.pos}{Option to include a character string to adjust the legend position. Position options are: 'bottomright', 
+'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right', 'center'. Defaults to "topleft".}
 }
 \value{
 Returns a plot 'post_plot_out'.
@@ -26,6 +42,6 @@ This function generates a time series plot for a mcmc inversion output parameter
 included in 'save.parms' argument in 'run_inversion' function. Two plot style options are included.
 }
 \examples{
-post_plot_ind(inv_out = inv_out, parm = "pco2", tstep_age, show.median = FALSE)
+post_plot_ind(inv_out = inv_out, parm = "pco2", tstep_age, show.prior = TRUE, show.median = FALSE, show.legend = TRUE)
 
 }

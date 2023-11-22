@@ -10,6 +10,11 @@
 #'
 #' @param type Indicate which plot style desired. Either 'CI' for 95 percent credible interval, or 'draws' for 500 draws of time
 #' series posteriors. Defaults to 'CI'.
+#' 
+#' @param show.legend Logical. Specify TRUE if you would like a legend in the plot. Defaults to TRUE.
+#' 
+#' @param leg.pos Option to include a character string to adjust the legend position. Position options are: 'bottomright', 
+#' 'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right', 'center'. Defaults to "topleft".
 #'
 #' @returns Returns a plot called 'post_plot'.
 #'
@@ -19,7 +24,9 @@
 #' @export
 post_plot <- function(inv_out = inv_out, 
                       parm = "dic", 
-                      type = "CI"){
+                      type = "CI",
+                      show.legend = TRUE,
+                      leg.pos = "topleft"){
 
   if(length(inv_out) != 3){
     stop("'inv_out' must be a list containing 3 elements from 'inv_out' function")
@@ -71,13 +78,16 @@ post_plot <- function(inv_out = inv_out,
       lines(ages_prox, parm_out[i,], col=rgb(red=0, green=0, blue=0, alpha=0.05), lwd=0.3)
     }
     lines(ages_prox, parm_med, col=rgb(red=1, green=0, blue=0), lwd=1.5)
-    legend(x = "topleft", fill = c("grey30", "red"), legend = c("sampled posterior draws", "median of posterior distributions"))
-
+    if(isTRUE(show.legend)){
+      legend(x = leg.pos, fill = c("grey30", "red"), legend = c("sampled posterior draws", "median of posterior distributions"))
+    }
   } else if(type =="CI"){
     post_plot <- plot(ages_prox, parm_med, type="l", xlab = "Age (kyr)", ylab = paste(parm, units), xlim = rev(range(ages_prox)), ylim = range(parm_out), col="black")
     polygon(c(ages_prox, rev(ages_prox)), c(parm_sum[,4], rev(parm_sum[,8])), col = "gray", lwd = 0.5)
     lines(ages_prox, parm_med, col="red", lwd=1.5)
-    legend(x = "topleft", fill = c("gray", "red"), legend = c("95% credible interval", "median of posterior distributions"))
+    if(isTRUE(show.legend)){
+      legend(x = leg.pos, fill = c("gray", "red"), legend = c("95% credible interval", "median of posterior distributions"))
+    }
   } else{
     stop("Must specify type of plot to be drawn, either 'CI' for 50% and 95% confidence interval or 'draws' for 500 draws of time series posteriors")
   }

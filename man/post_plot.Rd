@@ -4,7 +4,13 @@
 \alias{post_plot}
 \title{Plots time series parameter posteriors}
 \usage{
-post_plot(inv_out = inv_out, parm = "dic", type = "CI")
+post_plot(
+  inv_out = inv_out,
+  parm = "dic",
+  type = "CI",
+  show.legend = TRUE,
+  leg.pos = "topleft"
+)
 }
 \arguments{
 \item{inv_out}{User inputs the MCMC data object that is returned by the 'run_inversion' function. Defaults to 'inv_out'.}
@@ -14,6 +20,11 @@ function. Defaults to 'pco2'.}
 
 \item{type}{Indicate which plot style desired. Either 'CI' for 95 percent credible interval, or 'draws' for 500 draws of time
 series posteriors. Defaults to 'CI'.}
+
+\item{show.legend}{Logical. Specify TRUE if you would like a legend in the plot. Defaults to TRUE.}
+
+\item{leg.pos}{Option to include a character string to adjust the legend position. Position options are: 'bottomright', 
+'bottom', 'bottomleft', 'left', 'topleft', 'top', 'topright', 'right', 'center'. Defaults to "topleft".}
 }
 \value{
 Returns a plot called 'post_plot'.
