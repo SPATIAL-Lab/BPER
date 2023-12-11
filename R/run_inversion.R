@@ -41,9 +41,9 @@ run_inversion <- function(priors = priors_foram,
                           n.thin = 1, 
                           parallel = FALSE){
 
-  clean_pri <- priors_foram[[1]]
-  clean_obs <- priors_foram[[2]]
-  psm_type <- priors_foram[[3]]
+  clean_pri <- priors[[1]]
+  clean_obs <- priors[[2]]
+  psm_type <- priors[[3]]
   data <- append(clean_obs, clean_pri)
 
   # Determine forward PSM model file to use based on type of 2nd carb chem variable and prior

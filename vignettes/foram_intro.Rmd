@@ -99,8 +99,8 @@ A list is returned with MCMC data object 'jout' as the first object. It is recom
 View('inv_out$jout$BUGSoutput$summary') 
 to make sure they are acceptable. The model will generate warnings if these values are suboptimal. 
 ```{r}
-inv_out <- run_inversion(priors_foram = pf_out, 
-                         save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw",                               "d18Osw.local","pco2", "dic", "pH", "press"), 
+inv_out <- run_inversion(priors = pf_out, 
+                         save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"), 
                          n.iter = 100, 
                          n.chains = 3, 
                          n.burnin = 30, 
