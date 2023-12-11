@@ -46,10 +46,6 @@ priors_foram <- function(parms_foram_adj,
   step_type <- age_index[[5]]
   
   
-  if(!inherits(dt, "numeric") | length(dt) < 2){
-    stop("Must include numeric 'dt' vector, greater than length 2, in list object in arguments")
-  }
-  
   if(length(prox_in_ai$d11B) < 1){
     d11Bf.fs = 0
     warning("No d11B data are available to clean")
