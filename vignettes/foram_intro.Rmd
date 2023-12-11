@@ -18,11 +18,13 @@ knitr::opts_chunk$set(
 library(BPER)
 ```
 
-First, load the proxy data. Here we will use the foraminiferal workflow as an example. Proxy data can be loaded into the model in a variety of formats. For example, you can directly load a data frame R object, or provide a path from the working directory to a .csv or .xlsx file. The function 'load_foram' should be used to load and check the proxy data. 
+Here is an example of how to use BPER functions to interpret foraminiferal data. 
+
+First, load the proxy data. Proxy data can be loaded into the model in a variety of formats. For example, you can directly load a data frame R object, or provide a path from the working directory to a .csv or .xlsx file. The function 'load_foram' should be used to load and check the proxy data. 
 
 The input data should be formatted with 8 columns and n row(s), with columns ordered as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The column order matters. Where "...2s" indicates 2 sigma uncertainties. 
 
-For foraminifera data, you must indicate which modern species' d11B vital effects are to be applied for each row of d11B data - this goes in the d11Bspec column. Use abbreviations including: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values below using 'priors_foram_adj' function), or 'borate'.
+You must indicate which modern species' d11B vital effects are to be applied for each row of d11B data - this goes in the d11Bspec column. Use abbreviations including: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values below using 'priors_foram_adj' function), or 'borate'.
 
 Now let's run the 'load_foram' function on the input data and save the output as an object called 'lf_out' (this will be a list) in the global environment. Here, we'll use low resolution PETM data as an example, and load it as a .csv file. Here, I will need to load a package system .csv file, but for normal .csv data loading, simply provide the file path from the directory in quotes for the 'foram_data' argument in the 'load_foram' function. For example, when you use this function on other data stored as .csv, you would instead type: 
 lf_out <- load_foram(foram_data = "path/to/your/file.csv")
