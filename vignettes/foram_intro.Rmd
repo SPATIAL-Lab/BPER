@@ -18,37 +18,48 @@ knitr::opts_chunk$set(
 library(BPER)
 ```
 
+First, load the proxy data. Here we will use the foraminiferal workflow as an example. Proxy data can be loaded into the model in a variety of formats. For example, you can directly load a data frame R object, or provide a path from the working directory to a .csv or .xlsx file. The function 'load_foram' should be used to load and check the proxy data. 
 
-Load a nx8 (8 column, n row(s)) data object, with columns ordered as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. 
-The column order matters. Indicate names of modern species' d11B vital effects to be applied for d11Bspec. Options currently include: 
-'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values below in 'priors_in_foram.R'), or 'borate'.
+The input data should be formatted with 8 columns and n row(s), with columns ordered as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The column order matters. Where "...2s" indicates 2 sigma uncertainties. 
 
-Run the 'load_foram' function on the input data. 
+For foraminifera data, you must indicate which modern species' d11B vital effects are to be applied for each row of d11B data - this goes in the d11Bspec column. Use abbreviations including: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. universa), 'custom' (specify values below using 'priors_foram_adj' function), or 'borate'.
+
+Now let's run the 'load_foram' function on the input data and save the output as an object called 'lf_out' (this will be a list) in the global environment. Here, we'll use low resolution PETM data as an example, and load it as a .csv file. Here, I will need to load a package system .csv file, but for normal .csv data loading, simply provide the file path from the directory in quotes for the 'foram_data' argument in the 'load_foram' function. For example, when you use this function on other data stored as .csv, you would instead type: 
+lf_out <- load_foram(foram_data = "path/to/your/file.csv")
+
+Blanks or 'NAs' are okay in your data - you do not need to have every measurement for each sample. You can have repeat sample ages for replicates etc., and you may provide d11B data from multiple species (just indicate which modern species', or 'custom', calibration you'd like to use for each row in d11Bspec). 
 ```{r}
-x <- data.frame(c(55956, 55956, 55954, 55932, 55926, 55924, 55901, 55899), c(14.61, 15.46, NA, 14.49, 14.11, NA, 14.46, 13.94), 
-                c(0.23, 0.22, NA, 0.34, 0.33, NA, 0.21, 0.29), c("Tsac", "Grub", NA, "Grub", "Tsac", NA, "Grub", "Tsac"), 
-                c(3.26, NA, 3.33, 5.04, NA, 4.83, NA, NA), c(0.1, NA, 0.1, 0.15, NA, 0.14, NA, NA), 
-                c(NA, NA, NA, -2.14, NA, -1.98, -2.19, -1.99), c(NA, NA, NA, 0.16, NA, 0.16, 0.16, 0.16))
+file1 = read.csv(system.file("extdata", "PETM_VignetteData.csv", package = "BPER"))
 
-lf_out <- load_foram(foram_data = x)
+lf_out <- load_foram(foram_data = file1)
 ```
 
 
-Take the returned list from 'load_foram' and use it for 'load_proxy' argument in 'age_index' function. Specify: the 'age_units'
-used in the data set ('kyr' or 'Myr'), the time step type ('step_type'): 'regular' for evenly spaced intervals or 'every' for a time step
-for every unique age in the data set. If 'regular' is specified, specify the step interval ('step_int'). 
+Next, take the returned list from 'load_foram', which we called 'lf_out' and use it for the 'load_proxy' argument in the 'age_index' function. Specify: the 'age_units' used in the input data set ('kyr' or 'Myr'), the time step type ('step_type'): 'regular', 'every', 'both' or 'custom'. 
+
+For 'regular': regularly spaced intervals for time steps. If 'regular' is used, you must specify a value for the 'step_int' argument (i.e., step interval; in the same units indicated for 'age_units'). 
+
+For 'every': there will be a time step at each age for which there is data. No further arguments are needed. 
+for every unique age in the data set. 
+
+For 'both': there will be a time step at each age for which there is data plus regular spaced time steps. 'step_int' must be specified for if 'both' is used. 
+
+For 'custom': The user provides a vector of ages for which they want time steps using the 'cust_steps' argument in the function. 
+
+Note that this information, and all the documentation on the functions and arguments within the functions can be easily accessed by typing "?<function name>" in the command line (e.g., type "?age_index"). 
+
+For our example, let's use 'both' for 'step_type' and specify 10 kyr for the step interval. This function returns a list. Let's call that list ai_out. 
 ```{r}
-ai_out <- age_index(load_proxy = lf_out, age_units = 'kyr', step_type = 'every')
+ai_out <- age_index(load_proxy = lf_out, age_units = 'kyr', step_type = 'both', step_int = 10)
 ```
 
 
-Use 'clean_foram' function on the return list from 'age_index' to compile and structure observational data for the MCMC inversion.
-```{r}
-clean_obs <- clean_foram(age_index = ai_out)
-```
+Many of the parameter values, including those that define priors, can be revised using 'parms_foram_adjust' function. There are two arguments in this function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values. The user-changeable parameters are listed in the help documentation of this function (type "?parms_foram_adj"). For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. 
 
+You can take a look at all of the default values for all of the user-accesible parameters by opening up one of the package system files. Just type in the console: 
+file.edit(system.file("extdata", "parms_in_foram.R", package = "BPER"))
 
-Many of the parameter values, including those that define priors, can be revised using 'parms_foram_adjust' function. There are two arguments in this function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values. The user-changeable parameters are listed in the help documentation of this function (type ?parms_foram_adj). For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. To demonstrate, we will adjust the parameters which define the distribution of the % of secondary calcite for the diagenetic correction on d18O.
+To demonstrate how to adjust these parameters, we will change the parameters which define the prior distribution of the % of secondary calcite for the diagenetic correction on d18O.
 ```{r}
 parm_names <- c("seccal", "seccal.sd")
 parm_values <- c(60, 5)
@@ -57,60 +68,85 @@ parms_foram_adj <- parms_foram_adj(parms2change = parm_names, change_values = pa
 ```
 
 
-Load in the adjusted parameters using the 'parms_forams_adj' argument OR do not include this argument to maintain default parameter 
-values. Include the 'age_index' return object from the 'age_index' function in arguments. Specify which 2nd carbonate chem variable 
-to use in CO2 calcs. Type ?priors_forams for list of options. Specify the type of prior 'cc2ndparm.pt' to use for the 2nd carb chem 
-variable, either as an autocorrelated time series model with prior distribution defined at time step 1 ('t1') or as a time series 
-with the prior distribution defined at each time step ('ts'). If 'ts' is selected, the user must include time series data object for 
-'cc2ndparmTS' argument consisting of 3 columns: age, mean value for 2nd carb chem variable, and sd for 2nd carb chem variable. This 
-record should span the data interval, but values do not need to be included for every time step as the record will be linearly 
-interpolated to create a time-continuous record. 'priors_foram' can take several minutes to run.
+You may load in the adjusted parameters using the 'parms_forams_adj' argument OR do not include this argument to maintain default parameter values. Include the 'age_index' return object (here we called it 'ai_out') in arguments. Specify which 2nd carbonate chem variable to use in CO2 calculations. Type "?priors_forams" for list of options. 
+
+We will also need to specify the type of prior to use for the 2nd carbonate chemistry variable with the 'cc2ndparm.pt' argument:
+
+You can choose 't1', where the user specifies the prior distribution which will be sampled at time step 1, and this distribution is allowed to shift for subsequent time steps following an autocorrelated time series model.
+
+Or you can choose 'ts', where the user supplies a time series record of their choosing which will be used to define the prior distribution at each time step. If 'ts' is selected, the user must include time series data object for 'cc2ndparmTS' argument consisting of 3 columns: age, mean value for 2nd carbonate chemistry variable, and sd for 2nd carbonate chemistry variable. This record should span the data interval, but values do not need to be included for every time step as the record will be linearly interpolated to create a time-continuous record. 
+
+Here, let's demonstrate using a DIC record for the second carbonate chemistry variable. Let's indicate 'ts' for 'cc2ndparm.pt', and supply an input a data.frame containing a DIC record which will be used to define the DIC prior at each time step. Let's run the 'priors_foram' function and save the returned object as pf_out. Note that 'priors_foram' can take several minutes to run.
 ```{r}
 
-dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), c(2320, 2328, 2405, 2440, 2481, 2500), 
+dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), 
+                      c(2320, 2328, 2405, 2440, 2481, 2500), 
                       c(150, 150, 150, 150, 150, 150)) 
 
-pf_out <- priors_foram(parms_foram_adj = parms_foram_adj, age_index = ai_out, cc2ndparm.vt = 'dic', cc2ndparm.pt = 'ts', 
-                             cc2ndparmTS = dic_pri)
+pf_out <- priors_foram(parms_foram_adj = parms_foram_adj, 
+                       age_index = ai_out, 
+                       cc2ndparm.vt = 'dic', 
+                       cc2ndparm.pt = 'ts', 
+                       cc2ndparmTS = dic_pri)
 ```
 
 
-Run the MCMC inversion by supplying in the 'clean_foram' and 'priors_foram' return objects. Specify a vector of character strings 
-indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations
-('n.iter'), the number of chains ('.n.chains'), the number of burn-in iterations ('n.burnin') and the amount of thinning (n.thin;
-i.e., saves every 'n'th iteration). The model can take several minutes to initialize and ~minutes per 1000 iterations to run. 
+Now we will run the MCMC inversion by supplying the 'priors_foram' return object ('pf_out' from above). Specify a vector of character strings indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations ('n.iter'), the number of chains ('.n.chains'; I recommend using anywhere from 3 to 9 chains depending on the application), the number of burn-in iterations ('n.burnin'; should be less than 'n.iter') and the amount of thinning (n.thin; i.e., saves every nth iteration). 
 
-A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical
-parameters 'Rhat' and 'n.eff' in 'inv_out$jout$BUGSoutput$summary' to make sure they are acceptable.
+Here, we will use a much lower number for iterations and burn-in than is recommended so that we can more quickly run the function for demonstration purposes. Even with lower iterations, the model can take several minutes to initialize and run. For this particular model, it is recommended to use on the order of hundreds of thousands of iterations, which will take several hours. 
+
+A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical parameters 'Rhat' and 'n.eff' by typing:
+View('inv_out$jout$BUGSoutput$summary') 
+to make sure they are acceptable. The model will generate warnings if these values are suboptimal. 
 ```{r}
-inv_out <- run_inversion(clean_obs = clean_obs, priors_foram = pf_out,
-                          save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"), n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1)
+inv_out <- run_inversion(priors_foram = pf_out, 
+                         save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw",                               "d18Osw.local","pco2", "dic", "pH", "press"), 
+                         n.iter = 100, 
+                         n.chains = 3, 
+                         n.burnin = 30, 
+                         n.thin = 1)
 ```
+As promised, the model generated warnings indicating that Rhat was high and n.eff was low. Most likely, this means that you should increase the number of iterations to generate a more robust result. For now let's move on and take a look at some of the output plots. 
 
+It is recommended that chain convergence is confirmed using trace plots (i.e., built in 'trace_plot' function). Specify the parameter of interest and the number of randomly selected trace plots for that parameter (n > 1 for time-dependent parameters). This parameter must be one of those listed in the 'save.parms' argument used above in the 'run_inversion' function. 
 
-It is recommended that chain convergence is confirmed using trace plots (i.e., built in 'trace_plot' function). Specify
-the parameter of interest and the number of randomly selected trace plots for that parameter (n >1 for time-dependent parameters).
+Let's take a look at 3 randomly selected trace plots for pCO2
 ```{r}
 trace_plot(inv_out = inv_out, parm = "pco2", n = 3)
 ```
+Note that the chains (each chain is a different color) in these plots show poor convergence and mixing. Ideally, these chains should overlap often and explore roughly the same parameter space. 
 
+Now let's plot some results. You can use the 'post_plot' function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type' argument, the user can select either "CI" to plot the 95% credible interval, or "draws" for 500 random draws of time series posteriors. 
 
-Use the post_plot function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type'
-argument, the user can select either CI to plot the 95% credible interval, or "draws" for 500 random draws of time series posteriors.
+Let's try out both types on our pCO2 posteriors. 
 ```{r}
 post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
+
+post_plot(inv_out = inv_out, parm = "pco2", type = "draws")
 ```
 
 
-Use the post_plot_ind function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step 
-to be plotted must be specified. You can also turn on/off the median line in the plot. 
+Sometimes you may want to look at a density plot which shows the probability distribution for a specific parameter at a specific time step rather than plotting the entire time series. Use the 'post_plot_ind' function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step to be plotted must be specified. Note that the model output time step ages that you can select from are stored in the 'ages_prox' object. This object is stored a few places, but most accessible from the return object of the 'age_index' function (i.e., type "View(ai_out$ages_prox)").
+
+You can also turn on/off a number of features in the plot such as the legend, the median line and the prior distribution (if it exists). For time-dependent parameters, the prior plotted here is the sampled distribution from the first time step. This distribution is allowed to shift through time, so it is possible the posterior distribution density plot may fall outside the range of the prior distribution for the first time step if plotting later time steps here. 
+
+As an example, let's plot the pH posterior probability distribution at the time step corresponding to 55956 ka:
 ```{r}
-post_plot_ind(inv_out = inv_out, parm = "pco2", tstep_age = 55956, show.median = TRUE)
+post_plot_ind(inv_out = inv_out, 
+              parm = "pH", 
+              tstep_age = 55956, 
+              show.prior = TRUE,
+              show.median = FALSE,
+              show.legend = TRUE,
+              leg.pos = "topleft")
 ```
 
 
-Other marine carbonate chemistry parameters can be calculated from any 2 marine carbonate chemistry parameters using 'carbchem' 
-function. This can be performed on the 'inv_out' object to quantify an additional carbonate chemistry variable.
+Other marine carbonate chemistry parameters can be calculated from any 2 marine carbonate chemistry parameters using 'carbchem' function. This can be performed on the 'inv_out' object to quantify an additional carbonate chemistry variable. These calculations follow Millero et al. (1995), Zeebe and Wolf-Galdrow (2001), and Zeebe and Tyrrell (2019). 
+
+First, we can assign object names to posterior medians in 'inv_out', then use those objects to calculate alkalinity from pH and pCO2. Note that you can use pH and any other carbonate chemistry variable. Type '?carbchem' for details on options and units. 
+
+Here, we select 'pco2' as our second carbonate chemistry variable to use in the calculation, and supply the pCO2 posterior median along with all the other variables of influence on carbonate chemistry calculations. 
 ```{r}
 pH <- inv_out$jout$BUGSoutput$median$pH 
 ccparm2.vec <- inv_out$jout$BUGSoutput$median$pco2
@@ -121,6 +157,14 @@ xca <- inv_out$jout$BUGSoutput$median$xca
 xmg <- inv_out$jout$BUGSoutput$median$xmg
 xso4 <- inv_out$jout$BUGSoutput$median$xso4
 
-carbchem(ccparm2 = "pco2", ccout = "alk", pH = pH, ccparm2.vec = ccparm2.vec, temp = temp, sal = sal, press = press,
-                     xca = xca, xmg = xmg, xso4 = xso4)
+carbchem(ccparm2 = "pco2", 
+         ccout = "alk", 
+         pH = pH, 
+         ccparm2.vec = ccparm2.vec, 
+         temp = temp, 
+         sal = sal, 
+         press = press,
+         xca = xca, 
+         xmg = xmg, 
+         xso4 = xso4)
 ```

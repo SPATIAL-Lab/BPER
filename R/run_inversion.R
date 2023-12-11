@@ -3,11 +3,8 @@
 #' This function loads data to send to jags, writes the proxy system model text string to be used in the inversion
 #' and runs the jags MCMC inversion. Dependencies: 'rjags' and 'R2jags'.
 #'
-#' @param clean_obs User provides the list that is returned by 'clean_foram', 'clean_phyto', 'clean_paleosol', or
-#' 'clean_plants' function. Defauts to 'clean_obs'.
-#'
 #' @param priors User provides the list that is returned by 'priors_foram', 'priors_phyto', 'priors_paleosol', or
-#' 'priors_plants' function. Defauts to 'priors_foram'.
+#' 'priors_plants' function. Defaults to 'priors_foram'.
 #'
 #' @param save.parms Provide a vector of character strings indicating each model parameter for which posteriors will be
 #' recorded in the output. Defaults to c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local",
@@ -31,13 +28,12 @@
 #' the saved parameters 'save.parms'. 'jout' is the same output list that is generated when you call the 'jags' function.
 #'
 #' @examples
-#' run_inversion(clean_obs = clean_obs, priors_foram = priors_foram,
+#' run_inversion(priors = priors_foram,
 #' save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
 #' n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, parallel = FALSE)
 #'
 #' @export
-run_inversion <- function(clean_obs = clean_obs, 
-                          priors_foram = priors_foram,
+run_inversion <- function(priors = priors_foram,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
                           n.iter = 10000, 
                           n.chains = 3, 
@@ -46,10 +42,8 @@ run_inversion <- function(clean_obs = clean_obs,
                           parallel = FALSE){
 
   clean_pri <- priors_foram[[1]]
-  psm_type <- priors_foram[[2]]
-
-  # Combine data lists to be sent to jags
-  clean_obs <- clean_obs[names(clean_obs) != "obs_type"]
+  clean_obs <- priors_foram[[2]]
+  psm_type <- priors_foram[[3]]
   data <- append(clean_obs, clean_pri)
 
   # Determine forward PSM model file to use based on type of 2nd carb chem variable and prior

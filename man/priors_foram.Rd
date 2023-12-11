@@ -37,7 +37,7 @@ inversion. It requires users to update a sheet defining all of the prior distrib
 It determines d11B vital effects slope and intercept for each modern species by running an mcmc inversion of each
 modern species' calibration data which is routinely updated. The function also generates the temp-, sal-, and press-
 dependent equilibrium constant look-up arrays which are used by the proxy system model. These arrays are updated to
-reflect senstivities to major ion concentrations of Ca, Mg and SO4 in the proxy system model. Dependencies: 
+reflect sensitivities to major ion concentrations of Ca, Mg and SO4 in the proxy system model. Dependencies: 
 'rjags' and 'R2jags'.
 }
 \examples{

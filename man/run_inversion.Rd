@@ -5,8 +5,7 @@
 \title{Runs the MCMC inversion using groomed data}
 \usage{
 run_inversion(
-  clean_obs = clean_obs,
-  priors_foram = priors_foram,
+  priors = priors_foram,
   save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw",
     "d18Osw.local", "pco2", "dic", "pH", "press"),
   n.iter = 10000,
@@ -17,8 +16,8 @@ run_inversion(
 )
 }
 \arguments{
-\item{clean_obs}{User provides the list that is returned by 'clean_foram', 'clean_phyto', 'clean_paleosol', or
-'clean_plants' function. Defauts to 'clean_obs'.}
+\item{priors}{User provides the list that is returned by 'priors_foram', 'priors_phyto', 'priors_paleosol', or
+'priors_plants' function. Defaults to 'priors_foram'.}
 
 \item{save.parms}{Provide a vector of character strings indicating each model parameter for which posteriors will be
 recorded in the output. Defaults to c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local",
@@ -37,9 +36,6 @@ to '3000'.}
 'jags' user manual for details. Defaults to '1'.}
 
 \item{parallel}{Logical. Specify TRUE if you want to enable parallel processing. Defaults to FALSE.}
-
-\item{priors}{User provides the list that is returned by 'priors_foram', 'priors_phyto', 'priors_paleosol', or
-'priors_plants' function. Defauts to 'priors_foram'.}
 }
 \value{
 Returns list 'inv_out' with 'jout' MCMC data object, a vector of timestep ages 'ages_prox', and a list of 
@@ -50,7 +46,7 @@ This function loads data to send to jags, writes the proxy system model text str
 and runs the jags MCMC inversion. Dependencies: 'rjags' and 'R2jags'.
 }
 \examples{
-run_inversion(clean_obs = clean_obs, priors_foram = priors_foram,
+run_inversion(priors = priors_foram,
 save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
 n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, parallel = FALSE)
 

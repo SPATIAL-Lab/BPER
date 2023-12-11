@@ -5,7 +5,7 @@
 #' It determines d11B vital effects slope and intercept for each modern species by running an mcmc inversion of each
 #' modern species' calibration data which is routinely updated. The function also generates the temp-, sal-, and press-
 #' dependent equilibrium constant look-up arrays which are used by the proxy system model. These arrays are updated to
-#' reflect senstivities to major ion concentrations of Ca, Mg and SO4 in the proxy system model. Dependencies: 
+#' reflect sensitivities to major ion concentrations of Ca, Mg and SO4 in the proxy system model. Dependencies: 
 #' 'rjags' and 'R2jags'.
 #'
 #' @param parms_foram_adj Specify the R object or character string file path to configuration script used to define parameters 
@@ -36,6 +36,79 @@ priors_foram <- function(parms_foram_adj,
                          cc2ndparm.pt = 'ts', 
                          cc2ndparmTS){
 
+  ###########################################################################################################################
+  ### Observational data ###
+  
+  prox_in_ai <- age_index[[1]]
+  ages_prox <- age_index[[2]]
+  dt <- age_index[[3]]
+  obs_type <- age_index[[4]]
+  step_type <- age_index[[5]]
+  
+  
+  if(!inherits(dt, "numeric") | length(dt) < 2){
+    stop("Must include numeric 'dt' vector, greater than length 2, in list object in arguments")
+  }
+  
+  if(length(prox_in_ai$d11B) < 1){
+    d11Bf.fs = 0
+    warning("No d11B data are available to clean")
+  } else{
+    d11Bf.fs = 1
+  }
+  
+  clean.d11B = prox_in_ai[complete.cases(prox_in_ai$d11B), ]
+  clean.d11B = transform(clean.d11B, si=ifelse(clean.d11B$d11Bspec=="Grub",1,
+                                               ifelse(clean.d11B$d11Bspec=="Tsac",2,
+                                                      ifelse(clean.d11B$d11Bspec=="Ouni",3,
+                                                             ifelse(clean.d11B$d11Bspec=="custom",4,5)))))
+  ai.d11B = as.integer(c(clean.d11B$ai))
+  si.d11B = as.integer(c(clean.d11B$si))
+  d11Bf.data = c(clean.d11B$d11B)
+  d11Bfu.data = c(clean.d11B$d11B2s/2)
+  
+  if(length(prox_in_ai$MgCa) < 1){
+    mgcaf.fs = 0
+    warning("No Mg/Ca data are available to clean")
+  } else{
+    mgcaf.fs = 1
+  }
+  
+  clean.mgca = prox_in_ai[complete.cases(prox_in_ai$MgCa), ]
+  ai.mgca = as.integer(c(clean.mgca$ai))
+  mgcaf.data = c(clean.mgca$MgCa)
+  mgcafu.data = c(clean.mgca$MgCa2s/2)
+  
+  if(length(prox_in_ai$d18O) < 1){
+    d18Of.fs = 0
+    warning("No d18O data are available to clean")
+  } else{
+    d18Of.fs = 1
+  }
+  
+  clean.d18O = prox_in_ai[complete.cases(prox_in_ai$d18O), ]
+  ai.d18O <- as.integer(c(clean.d18O$ai))
+  d18Of.data = c(clean.d18O$d18O)
+  d18Ofu.data = c(clean.d18O$d18O2s/2)
+  
+  ai.all = c(ai.d11B, ai.mgca, ai.d18O)
+  ai.prox = unique(ai.all)
+  ai.prox = sort(ai.prox, decreasing = FALSE)
+  
+  if (step_type == "regular"){
+    ai.prox = seq(from = 1, to = length(dt) + 1, by = 1)
+  }
+  
+  clean_obs = list("ai.d11B" = ai.d11B, "si.d11B" = si.d11B, "d11Bf.data" = d11Bf.data, "d11Bfu.data" = d11Bfu.data, "d11Bf.fs" = d11Bf.fs,
+                   "ai.mgca" = ai.mgca, "mgcaf.data" = mgcaf.data, "mgcafu.data" = mgcafu.data, "mgcaf.fs" = mgcaf.fs,
+                   "ai.d18O" = ai.d18O, "d18Of.data" = d18Of.data, "d18Ofu.data" = d18Ofu.data, "d18Of.fs" = d18Of.fs,
+                   "ai.prox" = ai.prox, "dt" = dt, "ages.prox" = ages_prox, "obs_type" = obs_type)
+  
+  
+  ###########################################################################################################################
+  ###########################################################################################################################
+  #### PRIORS ####
+  
   # Load the prior values from user or default package data
   if(is.null(parms_foram_adj)){
     parms_foram <- system.file("extdata", "parms_in_foram.R", package = "BPER")
@@ -48,10 +121,6 @@ priors_foram <- function(parms_foram_adj,
     list2env(parms_foram,globalenv())
   }
   
-
-  # Load ages_prox from 'age_index' object - product of age_index function
-  ages_prox <- age_index[[2]]
-
 
   ###########################################################################################################################
   # Determine mean and sd for vital effect slope and intercept for modern species calibrations
@@ -331,7 +400,7 @@ priors_foram <- function(parms_foram_adj,
   }
   
   psm_type <- paste(cc2ndparm.vt, cc2ndparm.pt, sep = "_")
-  priors_foram <- list("clean_pri" = clean_pri, "psm_type" = psm_type)
+  priors_foram <- list("clean_pri" = clean_pri, "clean_obs" = clean_obs, "psm_type" = psm_type)
   class(priors_foram) = "priors_foram"
   return(priors_foram)
 }

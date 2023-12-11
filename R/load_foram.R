@@ -13,7 +13,7 @@
 #' with 'priors_foram_adj' function), or 'borate'. If 'csv' or 'xlsx' is to be used instead of R object, provide a 
 #' character string path to file from directory. 
 #' 
-#' @param sheet If 'xlsx' is indicated for 'type' provide a character string of the sheet name to read in. 
+#' @param sheet If '.xlsx' is being used provide a character string of the sheet name to read in. 
 #'
 #' @returns Returns list 'load_foram'. This list contains 'prox_in' data.frame which has been checked for data completeness
 #' and compatibility with other package functions and 'obs_type' which indicates which measurements are included.
@@ -23,7 +23,6 @@
 #' 
 #' @export
 load_foram <- function(foram_data, 
-                       type = "Robj", 
                        sheet = NULL){
   
   if(is.character(foram_data)){

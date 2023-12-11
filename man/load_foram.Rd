@@ -4,7 +4,7 @@
 \alias{load_foram}
 \title{Checks and formats foraminiferal proxy data}
 \usage{
-load_foram(foram_data, type = "Robj", sheet = NULL)
+load_foram(foram_data, sheet = NULL)
 }
 \arguments{
 \item{foram_data}{User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns
@@ -13,7 +13,7 @@ d11Bspec options are: 'Grub' (G. ruber), 'Tsac' (T. sacculifer), 'Ouni' (O. univ
 with 'priors_foram_adj' function), or 'borate'. If 'csv' or 'xlsx' is to be used instead of R object, provide a 
 character string path to file from directory.}
 
-\item{sheet}{If 'xlsx' is indicated for 'type' provide a character string of the sheet name to read in.}
+\item{sheet}{If '.xlsx' is being used provide a character string of the sheet name to read in.}
 }
 \value{
 Returns list 'load_foram'. This list contains 'prox_in' data.frame which has been checked for data completeness

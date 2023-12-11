@@ -8,7 +8,8 @@ age_index(
   load_proxy = load_foram,
   age_units = "kyr",
   step_type = "regular",
-  step_int = 10
+  step_int = 10,
+  cust_steps
 )
 }
 \arguments{
@@ -18,10 +19,16 @@ functions. Defauts to 'load_foram'.}
 \item{age_units}{Indicate the age units used in the input data. Either 'kyr' or 'Myr'. Defaults to 'kyr'.}
 
 \item{step_type}{Indicate either 'regular' for regular interval time stepping with step interval specified,
-i.e., 'step_int', OR 'every' for variable time steps at each age for which there is data, and 'step_int' is not required.
-Defaults to 'regular'.}
+i.e., 'step_int', OR 'every' for variable time steps at each age for which there is data, and 'step_int' is not required, 
+OR 'both' to have time steps at each age for which there is data in addition to regular time step intervals - 'step_int' must
+be specified for 'both' step_type argument) OR 'custom' to provide your own vector of time step ages ('cust_steps' vector 
+of ages must be included as argument for 'custom' step_type). Defaults to 'regular'.}
 
-\item{step_int}{If 'step_type' is regular, indicated the 'step_int' or regular step interval to be used. Defaults to '10'.}
+\item{step_int}{If 'step_type' is 'regular' or 'both', indicated the 'step_int' or regular step interval to be used. 
+Defaults to '10'.}
+
+\item{cust_steps}{If 'custom' is specified for 'step_type' provide a vector of ages. There will be a time step for each 
+age supplied. Defaults to null.}
 }
 \value{
 Returns list 'age_index'. This list contains 1. 'prox_in_ai' data frame which has been age indexed by the function,

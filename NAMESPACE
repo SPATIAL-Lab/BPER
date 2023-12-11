@@ -2,7 +2,6 @@
 
 export(age_index)
 export(carbchem)
-export(clean_foram)
 export(load_foram)
 export(parms_foram_adj)
 export(post_plot)
