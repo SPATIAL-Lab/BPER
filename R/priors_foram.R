@@ -95,9 +95,9 @@ priors_foram <- function(parms_foram_adj,
   ai.prox = unique(ai.all)
   ai.prox = sort(ai.prox, decreasing = FALSE)
   
-  ai.d11B = match(ai.d11B, ai.prox)
-  ai.mgca = match(ai.mgca, ai.prox)
-  ai.d18O = match(ai.d18O, ai.prox)
+  # ai.d11B = match(ai.d11B, ai.prox)
+  # ai.mgca = match(ai.mgca, ai.prox)
+  # ai.d18O = match(ai.d18O, ai.prox)
   
   # if (step_type == "regular"){
   #   ai.prox = seq(from = 1, to = length(dt) + 1, by = 1)
