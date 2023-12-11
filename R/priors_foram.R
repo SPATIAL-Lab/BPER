@@ -65,7 +65,7 @@ priors_foram <- function(parms_foram_adj,
   ai.d11B = as.integer(c(clean.d11B$ai))
   si.d11B = as.integer(c(clean.d11B$si))
   d11Bf.data = c(clean.d11B$d11B)
-  d11Bfu.data = c(clean.d11B$d11B2s/2)
+  d11Bfu.data = c(as.numeric(clean.d11B$d11B2s)/2)
   
   if(length(prox_in_ai$MgCa) < 1){
     mgcaf.fs = 0
@@ -77,7 +77,7 @@ priors_foram <- function(parms_foram_adj,
   clean.mgca = prox_in_ai[complete.cases(prox_in_ai$MgCa), ]
   ai.mgca = as.integer(c(clean.mgca$ai))
   mgcaf.data = c(clean.mgca$MgCa)
-  mgcafu.data = c(clean.mgca$MgCa2s/2)
+  mgcafu.data = c(as.numeric(clean.mgca$MgCa2s/2))
   
   if(length(prox_in_ai$d18O) < 1){
     d18Of.fs = 0
@@ -89,7 +89,7 @@ priors_foram <- function(parms_foram_adj,
   clean.d18O = prox_in_ai[complete.cases(prox_in_ai$d18O), ]
   ai.d18O <- as.integer(c(clean.d18O$ai))
   d18Of.data = c(clean.d18O$d18O)
-  d18Ofu.data = c(clean.d18O$d18O2s/2)
+  d18Ofu.data = c(as.numeric(clean.d18O$d18O2s/2))
   
   ai.all = c(ai.d11B, ai.mgca, ai.d18O)
   ai.prox = unique(ai.all)
