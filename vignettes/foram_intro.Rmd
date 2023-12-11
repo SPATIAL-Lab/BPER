@@ -50,9 +50,9 @@ For 'custom': The user provides a vector of ages for which they want time steps 
 
 Note that this information, and all the documentation on the functions and arguments within the functions can be easily accessed by typing "?<function name>" in the command line (e.g., type "?age_index"). 
 
-For our example, let's use 'every' for 'step_type'. This function returns a list. Let's call that list ai_out. 
+For our example, let's use 'regular' for 'step_type' with a 10 kyr step interval. This function returns a list. Let's call that list ai_out. 
 ```{r}
-ai_out <- age_index(load_proxy = lf_out, age_units = 'kyr', step_type = 'every')
+ai_out <- age_index(load_proxy = lf_out, age_units = 'kyr', step_type = 'regular', step_int = 10)
 ```
 
 
