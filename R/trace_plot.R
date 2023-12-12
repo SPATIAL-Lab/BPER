@@ -21,8 +21,8 @@ trace_plot <- function(inv_out = inv_out,
                        parm = "pco2", 
                        n = 1){
 
-  if(length(inv_out) != 3){
-    stop("'inv_out' must be a list containing 3 elements from 'inv_out' function")
+  if(length(inv_out) != 4){
+    stop("'inv_out' must be a list containing 3 elements from 'run_inversion' function")
   }
 
   jout <- inv_out[[1]]
