@@ -4,7 +4,7 @@
 #' and runs the jags MCMC inversion. Dependencies: 'rjags' and 'R2jags'.
 #'
 #' @param priors User provides the list that is returned by 'priors_foram', 'priors_phyto', 'priors_paleosol', or
-#' 'priors_plants' function. Defaults to 'priors_foram'.
+#' 'priors_plants' function. 
 #'
 #' @param save.parms Provide a vector of character strings indicating each model parameter for which posteriors will be
 #' recorded in the output. Defaults to c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local",
@@ -33,7 +33,7 @@
 #' n.iter = 10000, n.chains = 3, n.burnin = 3000, n.thin = 1, parallel = FALSE)
 #'
 #' @export
-run_inversion <- function(priors = priors_foram,
+run_inversion <- function(priors,
                           save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"),
                           n.iter = 10000, 
                           n.chains = 3, 

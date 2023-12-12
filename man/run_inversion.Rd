@@ -5,7 +5,7 @@
 \title{Runs the MCMC inversion using groomed data}
 \usage{
 run_inversion(
-  priors = priors_foram,
+  priors,
   save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw",
     "d18Osw.local", "pco2", "dic", "pH", "press"),
   n.iter = 10000,
@@ -17,7 +17,7 @@ run_inversion(
 }
 \arguments{
 \item{priors}{User provides the list that is returned by 'priors_foram', 'priors_phyto', 'priors_paleosol', or
-'priors_plants' function. Defaults to 'priors_foram'.}
+'priors_plants' function.}
 
 \item{save.parms}{Provide a vector of character strings indicating each model parameter for which posteriors will be
 recorded in the output. Defaults to c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local",
