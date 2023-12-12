@@ -42,9 +42,11 @@ post_plot_ind <- function(inv_out = inv_out,
 
   # load objects from 'inv_out' list
   jout <- inv_out[[1]]
-  ages_prox <- inv_out[[2]]
+  ages_prox <- as.numeric(inv_out[[2]])
   save.parms <- inv_out[[3]]
   priors <- inv_out[[4]]
+  
+  tstep_age = as.numeric(tstep_age)
 
   parm_out <- jout$BUGSoutput$sims.list[[parm]]
   # if(ncol(parm_out) > 1 & !(tstep_age %in% ages_prox)){
