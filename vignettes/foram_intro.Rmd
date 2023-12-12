@@ -31,8 +31,6 @@ lf_out <- load_foram(foram_data = "path/to/your/file.csv")
 
 Blanks or 'NAs' are okay in your data - you do not need to have every measurement for each sample. You can have repeat sample ages for replicates etc., and you may provide d11B data from multiple species (just indicate which modern species', or 'custom', calibration you'd like to use for each row in d11Bspec). 
 ```{r}
-#file1 = read.csv(system.file("extdata", "PETM_VignetteData.csv", package = "BPER"))
-
 x <- data.frame(c(55956, 55956, 55954, 55932, 55926, 55924, 55901, 55899), 
                 c(14.61, 15.46, NA, 14.49, 14.11, NA, 14.46, 13.94), 
                 c(0.23, 0.22, NA, 0.34, 0.33, NA, 0.21, 0.29), 
@@ -114,9 +112,7 @@ inv_out <- run_inversion(priors = pf_out,
                          n.thin = 1)
 ```
 
-A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical parameters 'Rhat' and 'n.eff' by typing:
-View('inv_out$jout$BUGSoutput$summary') 
-to make sure they are acceptable. 
+A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical parameters 'Rhat' and 'n.eff' to make sure they are acceptable. These parameters can be found in inv_out > jout > BUGSoutput > summary. 
 
 As you can see, the model generated warnings indicating that Rhat was high and n.eff was low. Most likely, this means that you should increase the number of iterations to generate a more robust result. For now let's move on and take a look at some of the output plots. 
 
@@ -137,46 +133,3 @@ post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
 post_plot(inv_out = inv_out, parm = "pco2", type = "draws")
 ```
 
-
-Sometimes you may want to look at a density plot which shows the probability distribution for a specific parameter at a specific time step rather than plotting the entire time series. Use the 'post_plot_ind' function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step to be plotted must be specified. Note that the model output time step ages that you can select from are stored in the 'ages_prox' object. This object is stored a few places, but most accessible from the return object of the 'age_index' function (i.e., type "View(ai_out$ages_prox)").
-
-You can also turn on/off a number of features in the plot such as the legend, the median line and the prior distribution (if it exists). For time-dependent parameters, the prior plotted here is the sampled distribution from the first time step. This distribution is allowed to shift through time, so it is possible the posterior distribution density plot may fall outside the range of the prior distribution for the first time step if plotting later time steps here. 
-
-As an example, let's plot the pH posterior probability distribution at the time step corresponding to 55954 ka:
-```{r}
-post_plot_ind(inv_out = inv_out, 
-              parm = "pH", 
-              tstep_age = 55954, 
-              show.prior = TRUE,
-              show.median = FALSE,
-              show.legend = TRUE,
-              leg.pos = "topleft")
-```
-
-
-Other marine carbonate chemistry parameters can be calculated from any 2 marine carbonate chemistry parameters using 'carbchem' function. This can be performed on the 'inv_out' object to quantify an additional carbonate chemistry variable. These calculations follow Millero et al. (1995), Zeebe and Wolf-Galdrow (2001), and Zeebe and Tyrrell (2019). 
-
-First, we can assign object names to posterior medians in 'inv_out', then use those objects to calculate alkalinity from pH and pCO2. Note that you can use pH and any other carbonate chemistry variable. Type '?carbchem' for details on options and units. 
-
-Here, we select 'pco2' as our second carbonate chemistry variable to use in the calculation, and supply the pCO2 posterior median along with all the other variables of influence on carbonate chemistry calculations. 
-```{r}
-pH <- inv_out$jout$BUGSoutput$median$pH 
-ccparm2.vec <- inv_out$jout$BUGSoutput$median$pco2
-temp <- inv_out$jout$BUGSoutput$median$tempC
-sal <- inv_out$jout$BUGSoutput$median$sal
-press <- rep_len(inv_out$jout$BUGSoutput$median$press, length.out = as.integer(length(sal)))
-xca <- inv_out$jout$BUGSoutput$median$xca
-xmg <- inv_out$jout$BUGSoutput$median$xmg
-xso4 <- inv_out$jout$BUGSoutput$median$xso4
-
-carbchem(ccparm2 = "pco2", 
-         ccout = "alk", 
-         pH = pH, 
-         ccparm2.vec = ccparm2.vec, 
-         temp = temp, 
-         sal = sal, 
-         press = press,
-         xca = xca, 
-         xmg = xmg, 
-         xso4 = xso4)
-```
