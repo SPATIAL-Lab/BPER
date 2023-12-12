@@ -105,10 +105,6 @@ pf_out <- priors_foram(parms_foram_adj = parms_foram_adj,
 Now we will run the MCMC inversion by supplying the 'priors_foram' return object ('pf_out' from above). Specify a vector of character strings indicating the parameters you would like saved in the MCMC output ('save.parms' argument). Also indicate the number of iterations ('n.iter'), the number of chains ('.n.chains'; I recommend using anywhere from 3 to 9 chains depending on the application), the number of burn-in iterations ('n.burnin'; should be less than 'n.iter') and the amount of thinning (n.thin; i.e., saves every nth iteration). 
 
 Here, we will use a much lower number for iterations and burn-in than is recommended so that we can more quickly run the function for demonstration purposes. Even with lower iterations, the model can take several minutes to initialize and run. For this particular model, it is recommended to use on the order of hundreds of thousands of iterations, which will take several hours. 
-
-A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical parameters 'Rhat' and 'n.eff' by typing:
-View('inv_out$jout$BUGSoutput$summary') 
-to make sure they are acceptable. The model will generate warnings if these values are suboptimal. 
 ```{r}
 inv_out <- run_inversion(priors = pf_out, 
                          save.parms = c("sal", "tempC", "xca", "xmg", "xso4", "d11Bsw", "d18Osw", "d18Osw.local","pco2", "dic", "pH", "press"), 
@@ -117,7 +113,12 @@ inv_out <- run_inversion(priors = pf_out,
                          n.burnin = 30, 
                          n.thin = 1)
 ```
-As promised, the model generated warnings indicating that Rhat was high and n.eff was low. Most likely, this means that you should increase the number of iterations to generate a more robust result. For now let's move on and take a look at some of the output plots. 
+
+A list is returned with MCMC data object 'jout' as the first object. It is recommended that you take a look at the statistical parameters 'Rhat' and 'n.eff' by typing:
+View('inv_out$jout$BUGSoutput$summary') 
+to make sure they are acceptable. 
+
+As you can see, the model generated warnings indicating that Rhat was high and n.eff was low. Most likely, this means that you should increase the number of iterations to generate a more robust result. For now let's move on and take a look at some of the output plots. 
 
 It is recommended that chain convergence is confirmed using trace plots (i.e., built in 'trace_plot' function). Specify the parameter of interest and the number of randomly selected trace plots for that parameter (n > 1 for time-dependent parameters). This parameter must be one of those listed in the 'save.parms' argument used above in the 'run_inversion' function. 
 
@@ -141,11 +142,11 @@ Sometimes you may want to look at a density plot which shows the probability dis
 
 You can also turn on/off a number of features in the plot such as the legend, the median line and the prior distribution (if it exists). For time-dependent parameters, the prior plotted here is the sampled distribution from the first time step. This distribution is allowed to shift through time, so it is possible the posterior distribution density plot may fall outside the range of the prior distribution for the first time step if plotting later time steps here. 
 
-As an example, let's plot the pH posterior probability distribution at the time step corresponding to 55956 ka:
+As an example, let's plot the pH posterior probability distribution at the time step corresponding to 55954 ka:
 ```{r}
 post_plot_ind(inv_out = inv_out, 
               parm = "pH", 
-              tstep_age = 55956, 
+              tstep_age = 55954, 
               show.prior = TRUE,
               show.median = FALSE,
               show.legend = TRUE,

@@ -46,10 +46,10 @@ post_plot_ind <- function(inv_out = inv_out,
   save.parms <- inv_out[[3]]
   priors <- inv_out[[4]]
 
-  parm_out <- jout$BUGSoutput$sims.list[[parm]]
-  if(ncol(parm_out) > 1 & !(tstep_age %in% ages_prox)){
-    stop("Parameter of interest is time-dependent, 'tstep_age' is required. Value must be in kyr and included in vector of time step ages, 'ages_prox'")
-  }
+  # parm_out <- jout$BUGSoutput$sims.list[[parm]]
+  # if(ncol(parm_out) > 1 & !(tstep_age %in% ages_prox)){
+  #   stop("Parameter of interest is time-dependent, 'tstep_age' is required. Value must be in kyr and included in vector of time step ages, 'ages_prox'")
+  # }
 
   # set units for parameters
   units <- ""
