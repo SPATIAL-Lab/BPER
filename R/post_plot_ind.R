@@ -36,8 +36,8 @@ post_plot_ind <- function(inv_out = inv_out,
                           show.legend = TRUE,
                           leg.pos = "topleft"){
 
-  if(length(inv_out) != 3){
-    stop("'inv_out' must be a list containing 3 elements from 'inv_out' function")
+  if(length(inv_out) != 4){
+    stop("'inv_out' must be a list containing 3 elements from 'run_inversion' function")
   }
 
   # load objects from 'inv_out' list
