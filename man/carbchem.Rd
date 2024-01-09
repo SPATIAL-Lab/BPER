@@ -24,8 +24,10 @@ Defaults to 'dic'.}
 
 \item{ccout}{Specify which parameter to compute: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'. Defaults to 'pco2'.}
 
-\item{inv_out}{Use inversion output, returned object from 'run_inversion' function, to compute carbonate chemistry. Otherwise, specify the 
-vectors with individual variable arguments. Defaults to NULL.}
+\item{inv_out}{Use inversion output returned object from 'run_inversion' function to compute carbonate chemistry. Using 'inv_out' 
+alone for this calculation requires that all the variables that go into the carbonate chemistry calculation were included in the 
+'save.parms' argument of the 'run_inversion' function. Otherwise, specify equal length vectors of values using individual variable 
+arguments. Defaults to NULL.}
 
 \item{pH}{Provide a vector of pH data in total scale if 'inv_out' is not used. Defaults to NULL.}
 

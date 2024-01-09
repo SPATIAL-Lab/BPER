@@ -130,6 +130,26 @@ Let's try out both types on our pCO2 posteriors.
 ```{r}
 post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
 
-post_plot(inv_out = inv_out, parm = "pco2", type = "draws")
+post_plot(inv_out = inv_out, parm = "pco2", type = "draws", n.draws = 800)
 ```
+
+Use the 'post_plot_ind' function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step to be plotted must be specified. You can also turn on/off the median line in the plot, include the prior distribution, and turn on/off and relocate the legend. Here is an example using 
+
+```{r}
+post_plot_ind(inv_out = inv_out, parm = "pH", tstep_age = 55944, show.median = TRUE, show.legend = TRUE, show.prior = TRUE, leg.pos = "topright")
+```
+Note that the 'tstep_age' we specified above resulted in a warning, but the function still runs. This is because the 'tstep_age' value we included does not correspond to any of the time step ages used in the inversion. By default, the 'post_plot_ind' function uses the closest time step age to the specified 'tstep_age'. The ages used for each inversion time step are listed in the 'ages_prox' vector. This vector can be accessed from the 'inv_out' list:
+```{r}
+inv_out$ages_prox
+```
+
+Last, 'BPER' has a built in carbonate chemistry calculator. This calculator follows Zeebe and Wolf-Gladrow (2001) and references therein, with adjustements to account for major ion concentration on equilibrium chemistry following Zeebe and Tyrrell (2019). 
+
+This allows you to compute other carbonate chemistry variables of interest from the 'inv_out' object, or a suite of user-provided vectors. Simply specify which carbonate chemistry variable ('ccparm2') you would like to use in addition to pH, to calculate the other carbonate chemistry variable of interest ('ccout'). If using 'inv_out' argument to specify carbonate chemistry values, the 'ccparm2' variable will need to be one of the variables specified in 'save.parms' argument of 'run_inversion' function. 
+
+The current version only uses median variable values from the Bayesian inversion in 'inv_out' to compute carbonate chemistry. Incorporation of uncertainty (i.e., Monte Carlo sampling of posteriors) is in the works. 
+```{r}
+carbchem(ccparm2 = "pco2", ccout = "alk", inv_out = inv_out)
+```
+A vector of alkalinity corresponding to the time steps of the inversion (i.e., 'inv_out$ages_prox') is returned. 
 
