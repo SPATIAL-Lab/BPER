@@ -8,7 +8,7 @@ post_plot(
   inv_out = inv_out,
   parm = "dic",
   type = "CI",
-  n.draws,
+  n.draws = 500,
   show.legend = TRUE,
   leg.pos = "topleft"
 )
@@ -22,8 +22,7 @@ function. Defaults to 'pco2'.}
 \item{type}{Indicate which plot style desired. Either 'CI' for 95 percent credible interval, or 'draws' for 500 draws of time
 series posteriors. Defaults to 'CI'.}
 
-\item{n.draws}{Indicate the number of posterior draws if something other than 500 is wanted and 'draws' was selected for 
-'type' argument. Defaults to NULL.}
+\item{n.draws}{Indicate the number of posterior draws if 'draws' was selected for 'type' argument. Defaults to 500.}
 
 \item{show.legend}{Logical. Specify TRUE if you would like a legend in the plot. Defaults to TRUE.}
 

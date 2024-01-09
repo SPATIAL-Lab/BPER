@@ -11,8 +11,7 @@
 #' @param type Indicate which plot style desired. Either 'CI' for 95 percent credible interval, or 'draws' for 500 draws of time
 #' series posteriors. Defaults to 'CI'.
 #' 
-#' @param n.draws Indicate the number of posterior draws if something other than 500 is wanted and 'draws' was selected for 
-#' 'type' argument. Defaults to NULL.
+#' @param n.draws Indicate the number of posterior draws if 'draws' was selected for 'type' argument. Defaults to 500.
 #' 
 #' @param show.legend Logical. Specify TRUE if you would like a legend in the plot. Defaults to TRUE.
 #' 
@@ -28,7 +27,7 @@
 post_plot <- function(inv_out = inv_out, 
                       parm = "dic", 
                       type = "CI",
-                      n.draws,
+                      n.draws = 500,
                       show.legend = TRUE,
                       leg.pos = "topleft"){
 
@@ -75,9 +74,6 @@ post_plot <- function(inv_out = inv_out,
     stop("Must input a time series parameter (i.e., 'parm' argument) that is in the 'save.parms' list used as argument for 'inv_out' function")
   }
 
-  if(type =='draws' & is.null(n.draws)){
-    n.draws = 500
-  }
   
   # generate time series plot (either random draws or confidence intervals) of parameter of interest
   if(type == "draws"){
