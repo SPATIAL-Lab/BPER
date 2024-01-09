@@ -6,38 +6,42 @@
 \usage{
 carbchem(
   ccparm2 = "dic",
-  ccout = "pco2",
-  pH = pH,
-  ccparm2.vec = ccparm2.vec,
-  temp = temp,
-  sal = sal,
-  press = press,
-  xca = xca,
-  xmg = xmg,
-  xso4 = xso4
+  ccout = "alk",
+  inv_out,
+  pH,
+  ccparm2.vec,
+  temp,
+  sal,
+  press,
+  xca,
+  xmg,
+  xso4
 )
 }
 \arguments{
 \item{ccparm2}{User indicates which 2nd carbonate chemistry variable to use: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'.
 Defaults to 'dic'.}
 
-\item{ccout}{Specify which parameter to compute: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'. Defaults to 'co2a'.}
+\item{ccout}{Specify which parameter to compute: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'. Defaults to 'pco2'.}
 
-\item{pH}{Provide a vector of pH data in total scale. Defaults to 'pH'.}
+\item{inv_out}{Use inversion output, returned object from 'run_inversion' function, to compute carbonate chemistry. Otherwise, specify the 
+vectors with individual variable arguments. Defaults to NULL.}
 
-\item{ccparm2.vec}{Provide a vector of data of the type specified by 'ccparm2'. Defaults to 'ccparm2.vec'.}
+\item{pH}{Provide a vector of pH data in total scale if 'inv_out' is not used. Defaults to NULL.}
 
-\item{temp}{Provide a vector of temperature data in degrees C. Defaults to 'temp'.}
+\item{ccparm2.vec}{Provide a vector of data of the type specified by 'ccparm2' if 'inv_out' is not used. Defaults to NULL.}
 
-\item{sal}{Provide a vector of salinity data. Defaults to 'sal'.}
+\item{temp}{Provide a vector of temperature data in degrees C if 'inv_out' is not used. Defaults to NULL.}
 
-\item{press}{Provide a vector of pressure data in bar. Defaults to 'press'.}
+\item{sal}{Provide a vector of salinity data if 'inv_out' is not used. Defaults to NULL.}
 
-\item{xca}{Provide a vector of Ca ion concentration data in mmol/kg. Defaults to 'xca'.}
+\item{press}{Provide a vector of pressure data in bar if 'inv_out' is not used. Defaults to NULL.}
 
-\item{xmg}{Provide a vector of Mg ion concentration data in mmol/kg. Defaults to 'xmg'.}
+\item{xca}{Provide a vector of Ca ion concentration data in mmol/kg if 'inv_out' is not used. Defaults to NULL.}
 
-\item{xso4}{Provide a vector of SO4 ion concentration data in mmol/kg. Defaults to 'xso4'.}
+\item{xmg}{Provide a vector of Mg ion concentration data in mmol/kg if 'inv_out' is not used. Defaults to NULL.}
+
+\item{xso4}{Provide a vector of SO4 ion concentration data in mmol/kg if 'inv_out' is not used. Defaults to NULL.}
 }
 \value{
 Returns vector of values for parameter of user interest specified by 'ccout' argument.
@@ -50,7 +54,6 @@ Units for each variable as follows: pH = total scale; ccparm2 = mmol/kg (dic, al
 temp = deg C, sal = unitless; press = bar; elemental concentrations are in mmol/kg.
 }
 \examples{
-carbchem(ccparm2 = "dic", ccout = "pco2", pH = pH, ccparm2.vec = ccparm2.vec, temp = temp, sal = sal, press = press,
-xca = xca, xmg = xmg, xso4 = xso4)
+carbchem(ccparm2 = "dic", ccout = "alk", inv_out = inv_out)
 
 }

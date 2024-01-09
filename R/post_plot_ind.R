@@ -55,7 +55,7 @@ post_plot_ind <- function(inv_out = inv_out,
   
   if(ncol(parm_out) > 1 & !(tstep_age %in% ages_prox)){
     tstep_age <- ages_prox[(which.min(abs(ages_prox-tstep_age)))]
-    warning("'tstep_age' is not a value in 'ages_prox'. The nearest time step to 'tstep_age'in 'ages_prox' vector has been used.")
+    warning("'tstep_age' is not a value in 'ages_prox'. The closest time step to 'tstep_age' in 'ages_prox' vector has been used.")
   }
 
   # set units for parameters

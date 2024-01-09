@@ -11,6 +11,9 @@
 #' @param type Indicate which plot style desired. Either 'CI' for 95 percent credible interval, or 'draws' for 500 draws of time
 #' series posteriors. Defaults to 'CI'.
 #' 
+#' @param n.draws Indicate the number of posterior draws if something other than 500 is wanted and 'draws' was selected for 
+#' 'type' argument. Defaults to NULL.
+#' 
 #' @param show.legend Logical. Specify TRUE if you would like a legend in the plot. Defaults to TRUE.
 #' 
 #' @param leg.pos Option to include a character string to adjust the legend position. Position options are: 'bottomright', 
@@ -25,6 +28,7 @@
 post_plot <- function(inv_out = inv_out, 
                       parm = "dic", 
                       type = "CI",
+                      n.draws,
                       show.legend = TRUE,
                       leg.pos = "topleft"){
 
@@ -71,10 +75,14 @@ post_plot <- function(inv_out = inv_out,
     stop("Must input a time series parameter (i.e., 'parm' argument) that is in the 'save.parms' list used as argument for 'inv_out' function")
   }
 
+  if(type =='draws' & is.null(n.draws)){
+    n.draws = 500
+  }
+  
   # generate time series plot (either random draws or confidence intervals) of parameter of interest
   if(type == "draws"){
     post_plot <- plot(ages_prox, parm_out[as.integer(runif(1,1,nrow(parm_out))),], type="l", xlab = "Age (kyr)", ylab = paste(parm, units), xlim = rev(range(ages_prox)), ylim = range(parm_out), col=rgb(red=0, green=0, blue=0, alpha=0.05), lwd=0.3)
-    for (i in as.integer(runif(500,1,nrow(parm_out)))){
+    for (i in as.integer(runif(n.draws,1,nrow(parm_out)))){
       lines(ages_prox, parm_out[i,], col=rgb(red=0, green=0, blue=0, alpha=0.05), lwd=0.3)
     }
     lines(ages_prox, parm_med, col=rgb(red=1, green=0, blue=0), lwd=1.5)

@@ -9,41 +9,57 @@
 #' @param ccparm2 User indicates which 2nd carbonate chemistry variable to use: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'.
 #' Defaults to 'dic'.
 #'
-#' @param ccout Specify which parameter to compute: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'. Defaults to 'co2a'.
+#' @param ccout Specify which parameter to compute: 'dic', 'alk', 'pco2', 'co3', 'hco3', or 'omegac'. Defaults to 'pco2'.
+#' 
+#' @param inv_out Use inversion output, returned object from 'run_inversion' function, to compute carbonate chemistry. Otherwise, specify the 
+#' vectors with individual variable arguments. Defaults to NULL.
 #'
-#' @param pH Provide a vector of pH data in total scale. Defaults to 'pH'.
+#' @param pH Provide a vector of pH data in total scale if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param ccparm2.vec Provide a vector of data of the type specified by 'ccparm2'. Defaults to 'ccparm2.vec'.
+#' @param ccparm2.vec Provide a vector of data of the type specified by 'ccparm2' if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param temp Provide a vector of temperature data in degrees C. Defaults to 'temp'.
+#' @param temp Provide a vector of temperature data in degrees C if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param sal Provide a vector of salinity data. Defaults to 'sal'.
+#' @param sal Provide a vector of salinity data if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param press Provide a vector of pressure data in bar. Defaults to 'press'.
+#' @param press Provide a vector of pressure data in bar if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param xca Provide a vector of Ca ion concentration data in mmol/kg. Defaults to 'xca'.
+#' @param xca Provide a vector of Ca ion concentration data in mmol/kg if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param xmg Provide a vector of Mg ion concentration data in mmol/kg. Defaults to 'xmg'.
+#' @param xmg Provide a vector of Mg ion concentration data in mmol/kg if 'inv_out' is not used. Defaults to NULL.
 #'
-#' @param xso4 Provide a vector of SO4 ion concentration data in mmol/kg. Defaults to 'xso4'.
+#' @param xso4 Provide a vector of SO4 ion concentration data in mmol/kg if 'inv_out' is not used. Defaults to NULL.
 #'
 #' @returns Returns vector of values for parameter of user interest specified by 'ccout' argument.
 #'
 #' @examples
-#' carbchem(ccparm2 = "dic", ccout = "pco2", pH = pH, ccparm2.vec = ccparm2.vec, temp = temp, sal = sal, press = press,
-#' xca = xca, xmg = xmg, xso4 = xso4)
+#' carbchem(ccparm2 = "dic", ccout = "alk", inv_out = inv_out)
 #'
 #' @export
 carbchem <- function(ccparm2 = "dic", 
-                     ccout = "pco2", 
-                     pH = pH, 
-                     ccparm2.vec = ccparm2.vec, 
-                     temp = temp, 
-                     sal = sal, 
-                     press = press,
-                     xca = xca, 
-                     xmg = xmg, 
-                     xso4 = xso4){
+                     ccout = "alk", 
+                     inv_out,
+                     pH, 
+                     ccparm2.vec,
+                     temp, 
+                     sal, 
+                     press,
+                     xca, 
+                     xmg, 
+                     xso4){
+  
+  if(!(is.null(inv_out))){
+    io_med <- inv_out$jout$BUGSoutput$median
+    pH <- as.numeric(io_med$pH)
+    ccparm2.vec <- as.numeric(io_med[[ccparm2]])
+    temp <- as.numeric(io_med$tempC)
+    sal <- as.numeric(io_med$sal)
+    press <- rep_len(as.numeric(io_med$press), length.out = as.integer(length(sal)))
+    xca <- as.numeric(io_med$xca)
+    xmg <- as.numeric(io_med$xmg)
+    xso4 <- as.numeric(io_med$xso4)
+  }
+  
 
   if(length(pH) != length(ccparm2.vec) | length(pH) != length(temp) | length(pH) != length(sal) | length(pH) != length(press) |
      length(pH) != length(xca) | length(pH) != length(xmg) | length(pH) != length(xso4)){
@@ -51,7 +67,7 @@ carbchem <- function(ccparm2 = "dic",
   }
 
   ccparm1 <- "pH"
-  cc_in <- data.frame(c(pH, ccparm2.vec, temp, sal, press, xca, xmg, xso4))
+  cc_in <- data.frame(pH, ccparm2.vec, temp, sal, press, xca, xmg, xso4)
   colnames(cc_in) <- c("pH","ccparm2.vec", "temp", "sal", "press", "xca", "xmg", "xso4")
 
 
