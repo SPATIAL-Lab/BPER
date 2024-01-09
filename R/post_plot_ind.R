@@ -49,9 +49,14 @@ post_plot_ind <- function(inv_out = inv_out,
   tstep_age = as.numeric(tstep_age)
 
   parm_out <- jout$BUGSoutput$sims.list[[parm]]
-  # if(ncol(parm_out) > 1 & !(tstep_age %in% ages_prox)){
-  #   stop("Parameter of interest is time-dependent, 'tstep_age' is required. Value must be in kyr and included in vector of time step ages, 'ages_prox'")
-  # }
+  if(ncol(parm_out) > 1 & is.null(tstep_age)){
+    stop("Parameter of interest is time-dependent, 'tstep_age' is required. Value must be in kyr and included in vector of time step ages, 'ages_prox'.")
+  } 
+  
+  if(ncol(parm_out) > 1 & !(tstep_age %in% ages_prox)){
+    tstep_age <- ages_prox[(which.min(abs(ages_prox-tstep_age)))]
+    warning("'tstep_age' is not a value in 'ages_prox'. The nearest time step to 'tstep_age'in 'ages_prox' vector has been used.")
+  }
 
   # set units for parameters
   units <- ""

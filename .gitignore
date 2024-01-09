@@ -12,6 +12,7 @@
 
 # Example code in package build process
 *-Ex.R
+BPER_tester.R
 
 # Output files from R CMD build
 /*.tar.gz
