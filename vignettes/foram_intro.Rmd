@@ -63,7 +63,7 @@ ai_out <- age_index(load_proxy = lf_out, age_units = 'kyr', step_type = 'regular
 ```
 
 
-Many of the parameter values, including those that define priors, can be revised using 'parms_foram_adjust' function. There are two arguments in this function, for 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values. The user-changeable parameters are listed in the help documentation of this function (type "?parms_foram_adj"). For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. 
+Many of the parameter values, including those that define priors, can be revised using 'parms_foram_adjust' function. There are two arguments in this function, 'parms2change' and 'change_values'. For 'parms2change' provide a vector of character strings for the parameters you would like to adjust from default values. The user-changeable parameters are listed in the help documentation of this function (type "?parms_foram_adj"). For 'change_values' argument, provide a vector of numeric values which correspond to the parameter names in 'parms2change'. 
 
 You can take a look at all of the default values for all of the user-accesible parameters by opening up one of the package system files. Just type in the console: 
 file.edit(system.file("extdata", "parms_in_foram.R", package = "BPER"))
@@ -122,28 +122,32 @@ Let's take a look at 3 randomly selected trace plots for pCO2
 ```{r}
 trace_plot(inv_out = inv_out, parm = "pco2", n = 3)
 ```
-Note that the chains (each chain is a different color) in these plots show poor convergence and mixing. Ideally, these chains should overlap often and explore roughly the same parameter space. 
 
-Now let's plot some results. You can use the 'post_plot' function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type' argument, the user can select either "CI" to plot the 95% credible interval, or "draws" for 500 random draws of time series posteriors. 
+Note that the chains (each chain is a different color) in these plots show poor convergence and mixing. Ideally, these chains should overlap often and explore roughly the same parameter space. This likely means that the posterior distributions are not reliable and more iterations and/or burn-in should be used. 
 
-Let's try out both types on our pCO2 posteriors. 
+Now let's plot some results. You can use the 'post_plot' function to generate a time series plot of the posterior distributions for a time-dependent parameter. For 'type' argument, the user can select either "CI" to plot the 95% credible interval, or "draws" for random draws of time series posteriors. 500 random draws is deafult, but this can be adjusted using the 'n.draws' argument. 
+
+Let's try out both types on our pCO2 posteriors:
 ```{r}
 post_plot(inv_out = inv_out, parm = "pco2", type = "CI")
 
 post_plot(inv_out = inv_out, parm = "pco2", type = "draws", n.draws = 800)
 ```
 
-Use the 'post_plot_ind' function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step to be plotted must be specified. You can also turn on/off the median line in the plot, include the prior distribution, and turn on/off and relocate the legend. Here is an example using 
+Note that our resulting pCO2 reconstruction is poorly constrained in terms of absolute value (too high pre-PETM pCO2, high uncertainty) and the relative change is also somewhat strange (linear increase that doesn't closely reflect d11B data perhaps as expected). This poor reconstruction is because we ran with low iteration and burn-in values, and there was little to no chain convergence for pCO2. 
 
+Use the 'post_plot_ind' function to generate a density plot for a parameter of interest. For time-dependent parameters, the time step to be plotted must be specified. You can also turn on/off the median line in the plot, include the prior distribution, and turn on/off and relocate the legend. Here is an example using pH as our parameter of interest: 
 ```{r}
 post_plot_ind(inv_out = inv_out, parm = "pH", tstep_age = 55944, show.median = TRUE, show.legend = TRUE, show.prior = TRUE, leg.pos = "topright")
 ```
+
 Note that the 'tstep_age' we specified above resulted in a warning, but the function still runs. This is because the 'tstep_age' value we included does not correspond to any of the time step ages used in the inversion. By default, the 'post_plot_ind' function uses the closest time step age to the specified 'tstep_age'. The ages used for each inversion time step are listed in the 'ages_prox' vector. This vector can be accessed from the 'inv_out' list:
 ```{r}
 inv_out$ages_prox
 ```
 
-Last, 'BPER' has a built in carbonate chemistry calculator. This calculator follows Zeebe and Wolf-Gladrow (2001) and references therein, with adjustements to account for major ion concentration on equilibrium chemistry following Zeebe and Tyrrell (2019). 
+
+Last, 'BPER' has a built in carbonate chemistry calculator. This calculator follows Zeebe and Wolf-Gladrow (2001) and references therein, with added adjustments to account for major ion concentration on equilibrium chemistry following Zeebe and Tyrrell (2019). 
 
 This allows you to compute other carbonate chemistry variables of interest from the 'inv_out' object, or a suite of user-provided vectors. Simply specify which carbonate chemistry variable ('ccparm2') you would like to use in addition to pH, to calculate the other carbonate chemistry variable of interest ('ccout'). If using 'inv_out' argument to specify carbonate chemistry values, the 'ccparm2' variable will need to be one of the variables specified in 'save.parms' argument of 'run_inversion' function. 
 
