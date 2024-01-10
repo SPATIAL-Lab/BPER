@@ -30,7 +30,7 @@ library(BPER)
 *****
 # Loading Proxy Data
 
-Now that the BPER package has been installed and loaded, load proxy data. Proxy data can be loaded into the model in a variety of formats. For example, you can directly load a data frame R object, or provide a path from the working directory to a .csv or .xlsx file. The function `load_foram` should be used to load and check the proxy data. 
+Now that the **BPER** package has been installed and loaded, load proxy data. Proxy data can be loaded into the model in a variety of formats. For example, you can directly load a data frame R object, or provide a path from the working directory to a .csv or .xlsx file. The function `load_foram` should be used to load and check the proxy data. 
 
 The input data should be formatted with 8 columns and n row(s), with columns ordered as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The column order matters. Where '...2s' indicates 2 sigma uncertainties. 
 
@@ -62,14 +62,14 @@ Next, take the returned list from `load_foram`, which we called `lf_out` and use
 
 ## Time step options
 
-For `regular`: regularly spaced intervals for time steps. If 'regular' is used, you must specify a value for the `step_int` argument (i.e., step interval; in the same units indicated for `age_units`). 
+* For `regular`: regularly spaced intervals for time steps. If 'regular' is used, you must specify a value for the `step_int` argument (i.e., step interval; in the same units indicated for `age_units`). 
 
-For `every`: there will be a time step at each age for which there is data. No further arguments are needed. 
+* For `every`: there will be a time step at each age for which there is data. No further arguments are needed. 
 for every unique age in the data set. 
 
-For `both`: there will be a time step at each age for which there is data plus regular spaced time steps. `step_int` must be specified for if `both` is used. 
+* For `both`: there will be a time step at each age for which there is data plus regular spaced time steps. `step_int` must be specified for if `both` is used. 
 
-For `custom`: The user provides a vector of ages for which they want time steps using the `cust_steps` argument in the function. 
+* For `custom`: The user provides a vector of ages for which they want time steps using the `cust_steps` argument in the function. 
 
 Note that this information, and all the documentation on the functions and arguments within the functions can be easily accessed by typing `?<function name>` in the command line (e.g., type `?age_index`). 
 
