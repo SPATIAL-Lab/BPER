@@ -77,7 +77,7 @@ post_plot <- function(inv_out = inv_out,
   
   # generate time series plot (either random draws or confidence intervals) of parameter of interest
   if(type == "draws"){
-    post_plot <- plot(ages_prox, parm_out[as.integer(runif(1,1,nrow(parm_out))),], type="l", xlab = "Age (kyr)", ylab = paste(parm, units), xlim = rev(range(ages_prox)), ylim = range(parm_out), col=rgb(red=0, green=0, blue=0, alpha=0.05), lwd=0.3)
+    plot(ages_prox, parm_out[as.integer(runif(1,1,nrow(parm_out))),], type="l", xlab = "Age (kyr)", ylab = paste(parm, units), xlim = rev(range(ages_prox)), ylim = range(parm_out), col=rgb(red=0, green=0, blue=0, alpha=0.05), lwd=0.3)
     for (i in as.integer(runif(n.draws,1,nrow(parm_out)))){
       lines(ages_prox, parm_out[i,], col=rgb(red=0, green=0, blue=0, alpha=0.05), lwd=0.3)
     }
@@ -86,7 +86,7 @@ post_plot <- function(inv_out = inv_out,
       legend(x = leg.pos, fill = c("grey30", "red"), legend = c("sampled posterior draws", "median of posterior distributions"))
     }
   } else if(type =="CI"){
-    post_plot <- plot(ages_prox, parm_med, type="l", xlab = "Age (kyr)", ylab = paste(parm, units), xlim = rev(range(ages_prox)), ylim = range(parm_out), col="black")
+    plot(ages_prox, parm_med, type="l", xlab = "Age (kyr)", ylab = paste(parm, units), xlim = rev(range(ages_prox)), ylim = range(parm_out), col="black")
     polygon(c(ages_prox, rev(ages_prox)), c(parm_sum[,4], rev(parm_sum[,8])), col = "gray", lwd = 0.5)
     lines(ages_prox, parm_med, col="red", lwd=1.5)
     if(isTRUE(show.legend)){
@@ -97,5 +97,5 @@ post_plot <- function(inv_out = inv_out,
   }
     
 
-  return(post_plot)
+  return()
 }

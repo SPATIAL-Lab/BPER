@@ -30,7 +30,7 @@
 #' @export
 post_plot_ind <- function(inv_out = inv_out, 
                           parm = "pH", 
-                          tstep_age, 
+                          tstep_age = NULL, 
                           show.prior = TRUE,
                           show.median = FALSE,
                           show.legend = TRUE,
@@ -94,7 +94,7 @@ post_plot_ind <- function(inv_out = inv_out,
   }
   
   if(ncol(parm_out) > 1){
-    post_plot_ind <- plot(density(parm_out[,match(tstep_age, ages_prox)]), xlim = xrange, main = paste(tstep_age, "ka"), xlab = paste(parm, units), col = "black", lwd=1.5)
+    plot(density(parm_out[,match(tstep_age, ages_prox)]), xlim = xrange, main = paste(tstep_age, "ka"), xlab = paste(parm, units), col = "black", lwd=1.5)
     polygon(density(na.omit(parm_out[,match(tstep_age, ages_prox)])), col = rgb(0,0,0, alpha = 0.4))
     if(isTRUE(show.prior) & !is.null(parm.pri.m) & parm != "pH"){
       polygon(density(rnorm(100000, mean = parm.pri.m, sd = parm.pri.sd)), col = rgb(1,0,0, alpha = 0.3))
@@ -114,7 +114,7 @@ post_plot_ind <- function(inv_out = inv_out,
       }
     } 
   } else if(ncol(parm_out) == 1){
-    post_plot_ind <- plot(density(parm_out), xlim = xrange, main ="", xlab = paste(parm, units), col = "black", lwd=1.5)
+    plot(density(parm_out), xlim = xrange, main ="", xlab = paste(parm, units), col = "black", lwd=1.5)
     polygon(density(parm_out), col = rgb(0,0,0, alpha = 0.4))
     if(isTRUE(show.prior) & !is.null(parm.pri.m) & parm != "pH"){
       polygon(density(rnorm(100000, mean = parm.pri.m, sd = parm.pri.sd)))
@@ -135,6 +135,6 @@ post_plot_ind <- function(inv_out = inv_out,
     }
   }
 
-  return(post_plot_ind)
+  return()
 }
 

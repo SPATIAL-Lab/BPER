@@ -7,7 +7,7 @@
 post_plot_ind(
   inv_out = inv_out,
   parm = "pH",
-  tstep_age,
+  tstep_age = NULL,
   show.prior = TRUE,
   show.median = FALSE,
   show.legend = TRUE,

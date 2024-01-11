@@ -1,6 +1,6 @@
 ---
 title: "Foram Data Example"
-author: "Dustin Harper and Gabe Bowen"
+author: "Dustin Harper and Gabriel Bowen"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -38,9 +38,7 @@ You must indicate which modern species' d11B vital effects are to be applied for
 
 Here, we'll use low resolution ODP Site 1209 PETM data as an example, and load it directly as a data frame. To load from a .csv or .xlsx, simply provide the file path from the directory in quotes for the `foram_data` argument in the `load_foram` function instead of a data frame. 
 
-For example, when you use this function on other data stored as .csv, you would use this code snippet: 
-
-`lf_out <- load_foram(foram_data = "path/to/your/file.csv")`
+For example, when you use this function on other data stored as .csv, you would use this code snippet: `lf_out <- load_foram(foram_data = "path/to/your/file.csv")` instead of what is in the code chunk directly below. For this example, let's just run the chunk below using a data frame. 
 
 Blanks or NAs are okay in your data - you do not need to have every measurement for each sample. You can have repeat sample ages for replicates etc., and you may provide d11B data from multiple species. Just indicate which modern species', or `custom`, calibration you'd like to use for each row in d11Bspec. 
 
@@ -92,11 +90,11 @@ ai_out <- age_index(load_proxy = lf_out, age_units = 'kyr', step_type = 'regular
 
 Many of the parameter values, including those that define priors, can be revised using `parms_foram_adjust` function. There are two arguments in this function, `parms2change` and `change_values`. For `parms2change` provide a vector of character strings for the parameters you would like to adjust from default values. For `change_values` argument, provide a vector of numeric values which correspond to the parameter names in `parms2change`. 
 
-The user-changeable parameters are listed in the help documentation of this function (type `?parms_foram_adj`). You can also take a look at all of the default values for all of the user-accessible parameters by opening up one of the package system files. To do this, type in the console: 
+The user-changeable parameters are listed in the help documentation of this function (type `?parms_foram_adj`). For environmental variables, **BPER** defaults to distributions typical of mid- to low- latitudes in the earliest Eocene.   ***The user is expected to adjust environmental priors to values consistent with their study interval and locality.*** You can take a look at all of the default values for all of the user-accessible parameters by opening up one of the package system files. To do this, type in the console: 
 
 `file.edit(system.file("extdata", "parms_in_foram.R", package = "BPER"))`
 
-To demonstrate how to adjust these parameters, we will change the parameters which define the prior distribution of the % of secondary calcite for the diagenetic correction on d18O.
+To demonstrate how to adjust these parameters, we will change the parameters which define the prior distribution of the % of secondary calcite for the diagenetic correction on d18O. We will keep the remaining parameter values unchanged since these are consistent with our study interval and location. 
 ```{r, adjustParms}
 parm_names <- c("seccal", "seccal.sd")
 parm_values <- c(60, 5)
@@ -109,9 +107,7 @@ parms_foram_adj <- parms_foram_adj(parms2change = parm_names, change_values = pa
 
 Next, load in any adjustments to default parameter and prior values. You may load in the adjusted parameters using the `parms_foram_adj` argument in the `priors_foram` function. This is what we will do for this example, however, you can leave this argument empty to maintain the default model parameter values. 
 
-Include the `age_index` return object (here we called it `ai_out`) in arguments. 
-
-Specify which 2nd carbonate chemistry variable to use in CO2 calculations. Type `?priors_foram` into the console for list of options. 
+Include the `age_index` return object (here we called it `ai_out`) in arguments. Specify which 2nd carbonate chemistry variable to use in CO2 calculations. Type `?priors_foram` into the console for list of options. 
 
 We will also need to specify the type of prior to use for the 2nd carbonate chemistry variable with the `cc2ndparm.pt` argument:
 
