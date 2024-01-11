@@ -4,7 +4,7 @@
 \alias{trace_plot}
 \title{Generates trace plots to examine chain convergence}
 \usage{
-trace_plot(inv_out = inv_out, parm = "pco2", n = 1)
+trace_plot(inv_out = inv_out, parm = "pco2", n = 3)
 }
 \arguments{
 \item{inv_out}{User inputs the MCMC data object that is returned by the 'run_inversion' function. Defaults to 'inv_out'.}

@@ -30,7 +30,7 @@
 #' cc2ndparm.pt = 'ts', cc2ndparmTS = cc2ndparmTS, save.output = FALSE)
 #'
 #' @export
-priors_foram <- function(parms_foram_adj, 
+priors_foram <- function(parms_foram_adj = NULL, 
                          age_index = age_index, 
                          cc2ndparm.vt = 'dic', 
                          cc2ndparm.pt = 'ts', 

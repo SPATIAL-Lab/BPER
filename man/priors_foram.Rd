@@ -5,7 +5,7 @@
 \title{Loads prior distributions for foram model}
 \usage{
 priors_foram(
-  parms_foram_adj,
+  parms_foram_adj = NULL,
   age_index = age_index,
   cc2ndparm.vt = "dic",
   cc2ndparm.pt = "ts",

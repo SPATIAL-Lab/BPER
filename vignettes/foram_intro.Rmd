@@ -62,7 +62,9 @@ lf_out <- load_foram(foram_data = x)
 *****
 # Age Indexing Proxy Data 
 
-Next, take the returned list from `load_foram`, which we called `lf_out` and use it for the `load_proxy` argument in the `age_index` function. Specify: the `age_units` used in the input data set (`kyr` or `Myr` are the only two options), the time step type (`step_type`): `regular`, `every`, `both` or `custom`. 
+In the MCMC inversion, a proposed time series model of the suite of environmental variables is evaluated against real proxy measurements to determine the likelihood of the time series model. Thus, we must link our measurements to the appropriate time series model time step by age indexing our data. In essence, this will tell the proxy model which proxy data should be used to evaluate each time step of the time series model. 
+
+To do this, take the returned list from `load_foram`, which we called `lf_out` and use it for the `load_proxy` argument in the `age_index` function. Specify: the `age_units` used in the input data set (`kyr` or `Myr` are the only two options), the time step type (`step_type`): `regular`, `every`, `both` or `custom`. 
 
 ## Time step options
 

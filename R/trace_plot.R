@@ -19,7 +19,7 @@
 #' @export
 trace_plot <- function(inv_out = inv_out, 
                        parm = "pco2", 
-                       n = 1){
+                       n = 3){
 
   if(length(inv_out) != 4){
     stop("'inv_out' must be a list containing 3 elements from 'run_inversion' function")
@@ -37,7 +37,6 @@ trace_plot <- function(inv_out = inv_out,
   mcmcplots::traplot(jout, parms = parm, random = TRUE)
 
   if(n > 1){
-    par(ask=TRUE)
     i = 2
     repeat{
       mcmcplots::traplot(jout, parms = parm, random = TRUE)
@@ -46,6 +45,6 @@ trace_plot <- function(inv_out = inv_out,
       }
       i = i + 1
     }
-    par(ask=FALSE)
   }
+  return()
 }

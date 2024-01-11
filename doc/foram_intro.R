@@ -31,7 +31,6 @@ parm_values <- c(60, 5)
 parms_foram_adj <- parms_foram_adj(parms2change = parm_names, change_values = parm_values)
 
 ## ---- loadPriors--------------------------------------------------------------
-
 dic_pri <- data.frame(c(56200, 55934, 55928, 55919, 55900, 55883), 
                       c(2320, 2328, 2405, 2440, 2481, 2500), 
                       c(150, 150, 150, 150, 150, 150)) 
