@@ -3,9 +3,7 @@
 #' This function allows you to load, QC and format foram data to use in subsequent 'BPER' functions.
 #' Function checks which data are present and whether measurement uncertainties are included.
 #' If ages or uncertainties are not included the function stops. Function flags 'incomplete'
-#' data object - i.e., missing Mg/Ca, or missing d18O, or missing d11B - but proceeds. Function also writes
-#' "priors_in_foram.R" to parent directory which needs to be modified before 'priors_foram' function is used.
-#' If no modifications to priors are needed, this can be turned off using 'load.priors' argument. Dependencies: 'readxl'.
+#' data object - i.e., missing Mg/Ca, or missing d18O, or missing d11B - but proceeds. Dependencies: 'readxl'.
 #'
 #' @param foram_data User inputs an 8 column R data object and assigns it to 'foram_data' in arguments. Object columns
 #' should be organized as: age, d11B, d11B2s, d11Bspec, Mg/Ca, Mg/Ca2s, d18O, d18O2s. The order matters. Current 

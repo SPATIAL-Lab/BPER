@@ -36,11 +36,13 @@ age_index <- function(load_proxy = load_foram,
                       cust_steps){
 
   prox_in <- load_proxy[[1]]
-  obs_type <- load_proxy[[2]]
+  if(!is.null(load_proxy[[2]])){
+    obs_type <- load_proxy[[2]]
+  }
 
-  if (age_units == "kyr"){
+  if(age_units == "kyr"){
     prox_in$age = prox_in$age
-  } else if (age_units == "Myr"){
+  } else if(age_units == "Myr"){
     prox_in$age = prox_in$age*1e3
     step_int = step_int*1e3
     if(!is.null(cust_steps)){
@@ -52,19 +54,19 @@ age_index <- function(load_proxy = load_foram,
 
   ages_prox = unique(prox_in$age)
 
-  if (step_type == "every"){
+  if(step_type == "every"){
     prox_in_ai = transform(prox_in, ai = as.numeric(factor(age*-1)))
     
-  } else if (step_type == "regular"){
-    if (step_int > 0 & step_int < ((max(ages_prox) - min(ages_prox))/2)){
+  } else if(step_type == "regular"){
+    if(step_int > 0 & step_int < ((max(ages_prox) - min(ages_prox))/2)){
       prox_in_ai = transform(prox_in, ai = as.numeric(1 + floor((max(prox_in$age) - prox_in$age) / step_int)))
       ages_prox = seq(from = max(ages_prox), to = min(ages_prox), by = -1*step_int) - 0.5*step_int
     } else{
       stop("Must specify positive value less than half the length of the total time interval for 'step_int' in function arguments if regular time step type is selected")
     }
     
-  } else if (step_type =="both"){
-    if (step_int > 0 & step_int < ((max(ages_prox) - min(ages_prox))/2)){
+  } else if(step_type =="both"){
+    if(step_int > 0 & step_int < ((max(ages_prox) - min(ages_prox))/2)){
       ai = c(1:length(prox_in$age))
       ages_prox = unique(sort(append(prox_in$age,(seq(from = max(ages_prox), to = min(ages_prox), by = -1*step_int) - 0.5*step_int)), decreasing = TRUE))
       for (i in seq_along(prox_in$age)){
@@ -76,12 +78,12 @@ age_index <- function(load_proxy = load_foram,
     } 
     
   } else if (step_type =="custom"){
-      if (is.null(cust_steps)){
+      if(is.null(cust_steps)){
         stop("Must include a vector of ages for 'cust_steps' argument if 'custom' is specified for 'step_type'.")
       }
     ai = c(1:length(prox_in$age))
     ages_prox = sort(cust_steps, decreasing = TRUE)
-    for (i in seq_along(prox_in$age)){
+    for(i in seq_along(prox_in$age)){
       ai[i] <- which(abs(ages_prox - prox_in$age[i]) == min(abs(ages_prox - prox_in$age[i])))
     }
     prox_in_ai = transform(prox_in, ai = sort(as.numeric(ai)))
