@@ -38,7 +38,7 @@ You must indicate which modern species' d11B vital effects are to be applied for
 
 Here, we'll use low resolution ODP Site 1209 PETM data as an example and load it as a .csv. This .csv is stored as a system file in the package. For most applications, users should simply provide the file path from the directory to the .csv or .xlsx file in quotes for the `foram_data` argument in the `load_foram` function. Alternatively, users can load a data frame directly. Let's take a look first at the raw data we will be loading. 
 ```{r, showData}
-print(read.csv("PETM_VignetteData.csv"))
+print(read.csv(system.file("extdata", "PETM_VignetteData.csv", package = "BPER")))
 ```
 
 Blanks or NAs are okay in your data - you do not need to have every measurement for each sample. You can have repeat sample ages for replicates etc., and you may provide d11B data from multiple species. Just indicate which modern species', or `custom`, calibration you'd like to use for each row in d11Bspec. 
