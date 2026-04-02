@@ -46,6 +46,9 @@ d13CO2(
 \value{
 Returns list `inv_out` with elements:
 \itemize{
+  \item `d13CO2_timeseries_out`: data frame of output ages and JAGS summary
+  statistics for the `d13CO2` parameter (`mean`, `sd`, `2.5%`, `25%`, `50%`,
+  `75%`, `97.5%`, `Rhat`, and `n.eff`).
   \item `jout`: the fitted `R2jags` output object.
   \item `ages`: vector of model timestep ages in ka.
   \item `age.indices`: data frame linking model age indices to ages.
