@@ -587,7 +587,8 @@ d13CO2 <- function(age.min = 0,
     stop("Could not match the full d13CO2 summary output to the model age vector")
   }
   
-  keep_idx <- seq.int(n.spinup.steps + 1, length(ages))
+  # define spinup index correctly
+  keep_idx <- seq.int(n.spinup + 1, length(ages))
   
   d13CO2_timeseries_out <- data.frame(
     age = ages[keep_idx],
@@ -597,6 +598,51 @@ d13CO2 <- function(age.min = 0,
     row.names = NULL,
     check.names = FALSE
   )
+  
+  ####################################################################################################
+  ##### Plot d13CO2 reconstruction
+  ####################################################################################################
+  
+  xlim <- c(max(d13CO2_timeseries_out$age), min(d13CO2_timeseries_out$age))
+  ylim <- range(c(d13CO2_timeseries_out$`2.5%`,
+                  d13CO2_timeseries_out$`97.5%`),
+                na.rm = TRUE)
+  
+  plot(d13CO2_timeseries_out$age,
+       d13CO2_timeseries_out$`50%`,
+       type = "n",
+       xlim = xlim,
+       ylim = ylim,
+       xaxt = "n",
+       xlab = "Age (ka)",
+       ylab = expression(delta^13*C[CO[2]]),
+       bty = "l",
+       las = 1)
+  
+  polygon(c(d13CO2_timeseries_out$age, rev(d13CO2_timeseries_out$age)),
+          c(d13CO2_timeseries_out$`97.5%`, rev(d13CO2_timeseries_out$`2.5%`)),
+          col = adjustcolor("grey70", alpha.f = 0.5),
+          border = NA)
+  
+  polygon(c(d13CO2_timeseries_out$age, rev(d13CO2_timeseries_out$age)),
+          c(d13CO2_timeseries_out$`75%`, rev(d13CO2_timeseries_out$`25%`)),
+          col = adjustcolor("grey40", alpha.f = 0.6),
+          border = NA)
+  
+  lines(d13CO2_timeseries_out$age,
+        d13CO2_timeseries_out$`50%`,
+        lwd = 2)
+  
+  axis(1,
+       at = pretty(d13CO2_timeseries_out$age),
+       labels = pretty(d13CO2_timeseries_out$age))
+  
+  box()
+  
+  
+  ####################################################################################################
+  ##### Run inversion
+  ####################################################################################################       
 
   inv_out <- list("d13CO2_timeseries_out" = d13CO2_timeseries_out,
                   "jout" = jout,
