@@ -66,7 +66,7 @@ parms_foram_adj <- function(parms2change = parms2change,
                             change_values = change_values){
   
   if(length(parms2change) != length(change_values)){
-    stop("Length of 'parms2change' vector much match that of 'change_values' vector")
+    stop("Length of 'parms2change' vector must match that of 'change_values' vector")
   }
   
   parms_foram <- system.file("extdata", "parms_in_foram.R", package = "BPER")

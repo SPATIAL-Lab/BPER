@@ -99,7 +99,7 @@ priors_foram <- function(parms_foram_adj = NULL,
   ai.prox = seq(from = 1, to = length(dt) + 1, by = 1)
   
   
-  clean_obs = list("ai.d11B" = ai.d11B, "si.d11B" = si.d11B, "d11Bf.data" = d11Bf.data, "d11Bfu.data" = d11Bfu.data, "d11Bf.fs" = d11Bf.fs,
+  clean_obs = list("ai.d11B" = ai.d11B, "spi.d11B" = spi.d11B, "d11Bf.data" = d11Bf.data, "d11Bfu.data" = d11Bfu.data, "d11Bf.fs" = d11Bf.fs,
                    "ai.mgca" = ai.mgca, "mgcaf.data" = mgcaf.data, "mgcafu.data" = mgcafu.data, "mgcaf.fs" = mgcaf.fs,
                    "ai.d18O" = ai.d18O, "d18Of.data" = d18Of.data, "d18Ofu.data" = d18Ofu.data, "d18Of.fs" = d18Of.fs,
                    "ai.prox" = ai.prox, "dt" = dt, "ages.prox" = ages_prox)
