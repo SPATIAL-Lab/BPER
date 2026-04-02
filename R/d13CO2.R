@@ -11,10 +11,10 @@
 #' @param temp_offset_model Character string. Either `"PhanDA"` or `"Li22"`.
 #' @param plate_model Character string. One of `"PALEOMAP"`,
 #'   `"TorsvikCocks2017"`, `"MERDITH2021"`, or `"CAO2024"`.
-#' @param n.iter Number of MCMC iterations. Defaults to 1000.
-#' @param n.chains Number of MCMC chains. Defaults to 3.
-#' @param n.burnin Number of burn-in iterations. Defaults to 300.
-#' @param n.thin Thinning interval. Defaults to 1.
+#' @param n.iter Number of MCMC iterations. Defaults to 3e5.
+#' @param n.chains Number of MCMC chains. Defaults to 6.
+#' @param n.burnin Number of burn-in iterations. Defaults to 1e5.
+#' @param n.thin Thinning interval. Defaults to 500.
 #' @param parallel Logical. If `TRUE`, run `R2jags::jags.parallel()`. If
 #'   `FALSE`, run `R2jags::jags()`. Defaults to `TRUE`.
 #'
@@ -69,10 +69,10 @@ d13CO2 <- function(age.min = 0,
                    GMST_model = "PhanDA",
                    temp_offset_model = "Li22",
                    plate_model = "PALEOMAP",
-                   n.iter = 1000,
-                   n.chains = 3,
-                   n.burnin = 300,
-                   n.thin = 1,
+                   n.iter = 3e5,
+                   n.chains = 6,
+                   n.burnin = 1e5,
+                   n.thin = 500,
                    parallel = TRUE){
 
   ####################################################################################################
@@ -587,9 +587,13 @@ d13CO2 <- function(age.min = 0,
     stop("Could not match the full d13CO2 summary output to the model age vector")
   }
   
+  keep_idx <- seq.int(n.spinup.steps + 1, length(ages))
+  
   d13CO2_timeseries_out <- data.frame(
-    age = ages,
-    summarydf[d13CO2_rows, c("mean", "sd", "2.5%", "25%", "50%", "75%", "97.5%", "Rhat", "n.eff"), drop = FALSE],
+    age = ages[keep_idx],
+    summarydf[d13CO2_rows[keep_idx],
+              c("mean", "sd", "2.5%", "25%", "50%", "75%", "97.5%", "Rhat", "n.eff"),
+              drop = FALSE],
     row.names = NULL,
     check.names = FALSE
   )
