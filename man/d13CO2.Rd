@@ -11,10 +11,10 @@ d13CO2(
   GMST_model = "PhanDA",
   temp_offset_model = "Li22",
   plate_model = "PALEOMAP",
-  n.iter = 1000,
-  n.chains = 3,
-  n.burnin = 300,
-  n.thin = 1,
+  n.iter = 3e+05,
+  n.chains = 6,
+  n.burnin = 1e+05,
+  n.thin = 500,
   parallel = TRUE
 )
 }
@@ -32,13 +32,13 @@ d13CO2(
 \item{plate_model}{Character string. One of `"PALEOMAP"`,
 `"TorsvikCocks2017"`, `"MERDITH2021"`, or `"CAO2024"`.}
 
-\item{n.iter}{Number of MCMC iterations. Defaults to 1000.}
+\item{n.iter}{Number of MCMC iterations. Defaults to 3e5.}
 
-\item{n.chains}{Number of MCMC chains. Defaults to 3.}
+\item{n.chains}{Number of MCMC chains. Defaults to 6.}
 
-\item{n.burnin}{Number of burn-in iterations. Defaults to 300.}
+\item{n.burnin}{Number of burn-in iterations. Defaults to 1e5.}
 
-\item{n.thin}{Thinning interval. Defaults to 1.}
+\item{n.thin}{Thinning interval. Defaults to 500.}
 
 \item{parallel}{Logical. If `TRUE`, run `R2jags::jags.parallel()`. If
 `FALSE`, run `R2jags::jags()`. Defaults to `TRUE`.}
