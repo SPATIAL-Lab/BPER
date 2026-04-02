@@ -42,10 +42,6 @@
 #'   \item `PhanCompWithTemp_CAO2024.csv`
 #' }
 #'
-#' After adding this file to `R/`, run `devtools::document()` (or
-#' `roxygen2::roxygenise()`) to generate the `.Rd` file in `man/` and update
-#' `NAMESPACE`.
-#'
 #' @examples
 #' \dontrun{
 #' out <- d13CO2()
@@ -66,10 +62,10 @@ d13CO2 <- function(age.min = 0,
                    GMST_model = "PhanDA",
                    temp_offset_model = "Li22",
                    plate_model = "PALEOMAP",
-                   n.iter = 1000,
-                   n.chains = 3,
-                   n.burnin = 300,
-                   n.thin = 1,
+                   n.iter = 3e5,
+                   n.chains = 6,
+                   n.burnin = 1e5,
+                   n.thin = 500,
                    parallel = TRUE){
 
   ####################################################################################################
