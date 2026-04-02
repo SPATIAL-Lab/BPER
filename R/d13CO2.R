@@ -20,6 +20,9 @@
 #'
 #' @returns Returns list `inv_out` with elements:
 #' \itemize{
+#'   \item `d13CO2_timeseries_out`: data frame of output ages and JAGS summary
+#'   statistics for the `d13CO2` parameter (`mean`, `sd`, `2.5%`, `25%`, `50%`,
+#'   `75%`, `97.5%`, `Rhat`, and `n.eff`).
 #'   \item `jout`: the fitted `R2jags` output object.
 #'   \item `ages`: vector of model timestep ages in ka.
 #'   \item `age.indices`: data frame linking model age indices to ages.
@@ -576,7 +579,21 @@ d13CO2 <- function(age.min = 0,
   ##### assemble output
   ####################################################################################################
 
-  inv_out <- list("jout" = jout,
+  summarydf <- data.frame(jout$BUGSoutput$summary)
+
+  d13CO2_rows <- grep("^d13CO2\\[", rownames(summarydf))
+
+  if(length(d13CO2_rows) != length(ages)){
+    stop("Could not match the full d13CO2 summary output to the model age vector")
+  }
+
+  d13CO2_timeseries_out <- data.frame(age = ages,
+                                      summarydf[d13CO2_rows, c("mean", "sd", "2.5%", "25%", "50%", "75%", "97.5%", "Rhat", "n.eff"), drop = FALSE],
+                                      row.names = NULL,
+                                      check.names = FALSE)
+
+  inv_out <- list("d13CO2_timeseries_out" = d13CO2_timeseries_out,
+                  "jout" = jout,
                   "ages" = ages,
                   "ages.short" = ages.short,
                   "age.indices" = age.indices,
@@ -600,8 +617,6 @@ d13CO2 <- function(age.min = 0,
                                      "toff_sd_uniform" = toff_sd_uniform,
                                      "toff_sd_uniform_bot" = toff_sd_uniform_bot),
                   "data.pass" = data.pass)
-
-  summarydf <- data.frame(jout$BUGSoutput$summary)
 
   if(any(summarydf$n.eff < 50)){
     warning("Some parameters have n.eff statistical parameter values less than 50; consider running more iterations")
