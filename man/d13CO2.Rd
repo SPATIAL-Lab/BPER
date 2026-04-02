@@ -45,11 +45,10 @@ d13CO2(
 `FALSE`, you do not get a plot returned. Defaults to `TRUE`.}
 }
 \value{
-Returns list `inv_out` with elements:
+Returns time series plot (optional) and list `inv_out` with elements:
 \itemize{
   \item `d13CO2_timeseries_out`: data frame of output ages and JAGS summary
-  statistics for the `d13CO2` parameter (`mean`, `sd`, `2.5%`, `25%`, `50%`,
-  `75%`, `97.5%`, `Rhat`, and `n.eff`).
+  statistics for the `d13CO2` parameter.
   \item `jout`: the fitted `R2jags` output object.
   \item `ages`: vector of model timestep ages in ka.
   \item `age.indices`: data frame linking model age indices to ages.
@@ -76,10 +75,6 @@ This function expects the following files to be installed with `BPER` under
   \item `PhanCompWithTemp_MERDITH2021.csv`
   \item `PhanCompWithTemp_CAO2024.csv`
 }
-
-After adding this file to `R/`, run `devtools::document()` (or
-`roxygen2::roxygenise()`) to generate the `.Rd` file in `man/` and update
-`NAMESPACE`.
 }
 \examples{
 \dontrun{
