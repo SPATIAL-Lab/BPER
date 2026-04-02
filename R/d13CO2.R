@@ -17,6 +17,8 @@
 #' @param n.thin Thinning interval. Defaults to 500.
 #' @param parallel Logical. If `TRUE`, run `R2jags::jags.parallel()`. If
 #'   `FALSE`, run `R2jags::jags()`. Defaults to `TRUE`.
+#' @param parallel Logical. If `TRUE`, you get a timeseries plot returned. If
+#'   `FALSE`, you do not get a plot returned. Defaults to `TRUE`.
 #'
 #' @returns Returns list `inv_out` with elements:
 #' \itemize{
@@ -73,7 +75,8 @@ d13CO2 <- function(age.min = 0,
                    n.chains = 6,
                    n.burnin = 1e5,
                    n.thin = 500,
-                   parallel = TRUE){
+                   parallel = TRUE,
+                   plot.out = TRUE){
 
   ####################################################################################################
   ##### argument checks
@@ -599,45 +602,41 @@ d13CO2 <- function(age.min = 0,
     check.names = FALSE
   )
   
-  ####################################################################################################
-  ##### Plot d13CO2 reconstruction
-  ####################################################################################################
   
-  xlim <- c(max(d13CO2_timeseries_out$age), min(d13CO2_timeseries_out$age))
-  ylim <- range(c(d13CO2_timeseries_out$`2.5%`,
-                  d13CO2_timeseries_out$`97.5%`),
-                na.rm = TRUE)
-  
-  plot(d13CO2_timeseries_out$age,
-       d13CO2_timeseries_out$`50%`,
-       type = "n",
-       xlim = xlim,
-       ylim = ylim,
-       xaxt = "n",
-       xlab = "Age (ka)",
-       ylab = expression(delta^13*C[CO[2]]),
-       bty = "l",
-       las = 1)
-  
-  polygon(c(d13CO2_timeseries_out$age, rev(d13CO2_timeseries_out$age)),
-          c(d13CO2_timeseries_out$`97.5%`, rev(d13CO2_timeseries_out$`2.5%`)),
-          col = adjustcolor("grey70", alpha.f = 0.5),
-          border = NA)
-  
-  polygon(c(d13CO2_timeseries_out$age, rev(d13CO2_timeseries_out$age)),
-          c(d13CO2_timeseries_out$`75%`, rev(d13CO2_timeseries_out$`25%`)),
-          col = adjustcolor("grey40", alpha.f = 0.6),
-          border = NA)
-  
-  lines(d13CO2_timeseries_out$age,
-        d13CO2_timeseries_out$`50%`,
-        lwd = 2)
-  
-  axis(1,
-       at = pretty(d13CO2_timeseries_out$age),
-       labels = pretty(d13CO2_timeseries_out$age))
-  
-  box()
+  if(plot.out){
+    
+    ####################################################################################################
+    ##### Plot d13CO2 reconstruction
+    ####################################################################################################
+    
+    plot(d13CO2_timeseries_out$age,
+         d13CO2_timeseries_out$`50%`,
+         type = "n",
+         xlim = c(max(d13CO2_timeseries_out$age), min(d13CO2_timeseries_out$age)),
+         ylim = range(c(d13CO2_timeseries_out$`2.5%`,
+                        d13CO2_timeseries_out$`97.5%`),
+                      na.rm = TRUE),
+         xlab = "Age (ka)",
+         ylab = expression(delta^13*C[CO[2]]),
+         bty = "l",
+         las = 1)
+    
+    polygon(c(d13CO2_timeseries_out$age, rev(d13CO2_timeseries_out$age)),
+            c(d13CO2_timeseries_out$`97.5%`, rev(d13CO2_timeseries_out$`2.5%`)),
+            col = adjustcolor("grey70", alpha.f = 0.5),
+            border = NA)
+    
+    polygon(c(d13CO2_timeseries_out$age, rev(d13CO2_timeseries_out$age)),
+            c(d13CO2_timeseries_out$`75%`, rev(d13CO2_timeseries_out$`25%`)),
+            col = adjustcolor("grey40", alpha.f = 0.6),
+            border = NA)
+    
+    lines(d13CO2_timeseries_out$age,
+          d13CO2_timeseries_out$`50%`,
+          lwd = 2)
+    
+    box()
+  }
   
   
   ####################################################################################################
