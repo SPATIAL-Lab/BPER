@@ -15,7 +15,8 @@ d13CO2(
   n.chains = 6,
   n.burnin = 1e+05,
   n.thin = 500,
-  parallel = TRUE
+  parallel = TRUE,
+  plot.out = TRUE
 )
 }
 \arguments{
@@ -40,8 +41,8 @@ d13CO2(
 
 \item{n.thin}{Thinning interval. Defaults to 500.}
 
-\item{parallel}{Logical. If `TRUE`, run `R2jags::jags.parallel()`. If
-`FALSE`, run `R2jags::jags()`. Defaults to `TRUE`.}
+\item{parallel}{Logical. If `TRUE`, you get a timeseries plot returned. If
+`FALSE`, you do not get a plot returned. Defaults to `TRUE`.}
 }
 \value{
 Returns list `inv_out` with elements:
