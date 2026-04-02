@@ -42,6 +42,10 @@
 #'   \item `PhanCompWithTemp_CAO2024.csv`
 #' }
 #'
+#' After adding this file to `R/`, run `devtools::document()` (or
+#' `roxygen2::roxygenise()`) to generate the `.Rd` file in `man/` and update
+#' `NAMESPACE`.
+#'
 #' @examples
 #' \dontrun{
 #' out <- d13CO2()
@@ -62,10 +66,10 @@ d13CO2 <- function(age.min = 0,
                    GMST_model = "PhanDA",
                    temp_offset_model = "Li22",
                    plate_model = "PALEOMAP",
-                   n.iter = 3e5,
-                   n.chains = 6,
-                   n.burnin = 1e5,
-                   n.thin = 500,
+                   n.iter = 1000,
+                   n.chains = 3,
+                   n.burnin = 300,
+                   n.thin = 1,
                    parallel = TRUE){
 
   ####################################################################################################
@@ -223,10 +227,10 @@ d13CO2 <- function(age.min = 0,
                   (prox.in$GMST_PhanDA - prox.in$GMST_PhanDA_lo)) / 2
 
   if(GMST_model == "PhanDA"){
-    GMST.m <- stats::approx(prox.in$age, prox.in$GMST_PhanDA, xout = ages, rule = 2)$y
-    GMST.sd <- stats::approx(prox.in$age, PhanDA_sd, xout = ages, rule = 2)$y
+    GMST.m <- stats::approx(prox.in$age, prox.in$GMST_PhanDA, xout = ages, rule = 2, ties = mean)$y
+    GMST.sd <- stats::approx(prox.in$age, PhanDA_sd, xout = ages, rule = 2, ties = mean)$y
   } else if(GMST_model == "Scotese21"){
-    GMST.m <- stats::approx(prox.in$age, prox.in$GMST_Scotese21, xout = ages, rule = 2)$y
+    GMST.m <- stats::approx(prox.in$age, prox.in$GMST_Scotese21, xout = ages, rule = 2, ties = mean)$y
     GMST.sd <- rep(x = GMST_sd_Scotese21, times = length(ages))
   }
 
@@ -243,12 +247,12 @@ d13CO2 <- function(age.min = 0,
 
   flattened$ages <- age.indices$age[match(flattened$ai, age.indices$ai)]
 
-  flattened$GMST_PhanDA_interp <- stats::approx(prox.in$age, prox.in$GMST_PhanDA, xout = flattened$ages, rule = 2)$y
-  flattened$GMST_Scotese21_interp <- stats::approx(prox.in$age, prox.in$GMST_Scotese21, xout = flattened$ages, rule = 2)$y
-  flattened$GMST_PhanDA_sd_interp <- stats::approx(prox.in$age, PhanDA_sd, xout = flattened$ages, rule = 2)$y
-  flattened$temp_offset_interp <- stats::approx(prox.in$age, prox.in$temp_offset, xout = flattened$ages, rule = 2)$y
-  flattened$temp_offset_PhanDA_interp <- stats::approx(prox.in$age, prox.in$temp_offset_PhanDA, xout = flattened$ages, rule = 2)$y
-  flattened$temp_offset_sd_interp <- stats::approx(prox.in$age, prox.in$temp_offset_sd, xout = flattened$ages, rule = 2)$y
+  flattened$GMST_PhanDA_interp <- stats::approx(prox.in$age, prox.in$GMST_PhanDA, xout = flattened$ages, rule = 2, ties = mean)$y
+  flattened$GMST_Scotese21_interp <- stats::approx(prox.in$age, prox.in$GMST_Scotese21, xout = flattened$ages, rule = 2, ties = mean)$y
+  flattened$GMST_PhanDA_sd_interp <- stats::approx(prox.in$age, PhanDA_sd, xout = flattened$ages, rule = 2, ties = mean)$y
+  flattened$temp_offset_interp <- stats::approx(prox.in$age, prox.in$temp_offset, xout = flattened$ages, rule = 2, ties = mean)$y
+  flattened$temp_offset_PhanDA_interp <- stats::approx(prox.in$age, prox.in$temp_offset_PhanDA, xout = flattened$ages, rule = 2, ties = mean)$y
+  flattened$temp_offset_sd_interp <- stats::approx(prox.in$age, prox.in$temp_offset_sd, xout = flattened$ages, rule = 2, ties = mean)$y
   flattened <- flattened[order(flattened$ai, flattened$site.index), ]
   flattened$row.index <- 1:nrow(flattened)
   rownames(flattened) <- NULL
@@ -415,8 +419,8 @@ d13CO2 <- function(age.min = 0,
   names(BWT.Cen_last) <- c("age", "BWT", "BWT_2sd")
   BWT <- rbind(BWT.Cen, BWT.Cen_last)
   BWT <- BWT[order(BWT$age, decreasing = TRUE),]
-  BWT.m <- stats::approx(BWT$age, BWT$BWT, xout = ages, method = "linear")
-  BWT.sd <- stats::approx(BWT$age, BWT$BWT_2sd/2, xout = ages, method = "linear")
+  BWT.m <- stats::approx(BWT$age, BWT$BWT, xout = ages, method = "linear", ties = mean)
+  BWT.sd <- stats::approx(BWT$age, BWT$BWT_2sd/2, xout = ages, method = "linear", ties = mean)
   BWT.m <- BWT.m[["y"]]
   BWT.sd <- BWT.sd[["y"]]
 
@@ -449,9 +453,9 @@ d13CO2 <- function(age.min = 0,
                     "n.sites" = n.sites,
                     "si.flat" = si.flat,
                     "ai.flat" = ai.flat,
-                    "GMST.m" = GMST.m,
+                    "GMST.obs" = GMST.m,
                     "GMST.sd" = GMST.sd,
-                    "BWT.m" = BWT.m,
+                    "BWT.obs" = BWT.m,
                     "BWT.sd" = BWT.sd,
                     "toff_sd_uniform_bot" = toff_sd_uniform_bot,
                     "toff.m" = toff.m,
