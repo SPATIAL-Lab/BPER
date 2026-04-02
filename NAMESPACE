@@ -2,6 +2,7 @@
 
 export(age_index)
 export(carbchem)
+export(d13CO2)
 export(load_foram)
 export(parms_foram_adj)
 export(post_plot)

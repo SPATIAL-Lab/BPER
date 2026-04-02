@@ -23,9 +23,7 @@ and compatibility with other package functions and 'obs_type' which indicates wh
 This function allows you to load, QC and format foram data to use in subsequent 'BPER' functions.
 Function checks which data are present and whether measurement uncertainties are included.
 If ages or uncertainties are not included the function stops. Function flags 'incomplete'
-data object - i.e., missing Mg/Ca, or missing d18O, or missing d11B - but proceeds. Function also writes
-"priors_in_foram.R" to parent directory which needs to be modified before 'priors_foram' function is used.
-If no modifications to priors are needed, this can be turned off using 'load.priors' argument. Dependencies: 'readxl'.
+data object - i.e., missing Mg/Ca, or missing d18O, or missing d11B - but proceeds. Dependencies: 'readxl'.
 }
 \examples{
 load_foram(foram_data)
