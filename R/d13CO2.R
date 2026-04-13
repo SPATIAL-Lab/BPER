@@ -421,8 +421,8 @@ d13CO2 <- function(age.min = 0,
   names(BWT.Cen_last) <- c("age", "BWT", "BWT_2sd")
   BWT <- rbind(BWT.Cen, BWT.Cen_last)
   BWT <- BWT[order(BWT$age, decreasing = TRUE),]
-  BWT.m <- stats::approx(BWT$age, BWT$BWT, xout = ages, method = "linear", ties = mean)
-  BWT.sd <- stats::approx(BWT$age, BWT$BWT_2sd/2, xout = ages, method = "linear", ties = mean)
+  BWT.m <- stats::approx(BWT$age, BWT$BWT, xout = ages, method = "linear", ties = mean, rule = 2)
+  BWT.sd <- stats::approx(BWT$age, BWT$BWT_2sd/2, xout = ages, method = "linear", ties = mean, rule = 2)
   BWT.m <- BWT.m[["y"]]
   BWT.sd <- BWT.sd[["y"]]
 
