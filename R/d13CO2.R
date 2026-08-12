@@ -135,6 +135,9 @@ d13CO2 <- function(age.min = 0,
   GMST_sd_Scotese21 <- 5
   toff_sd_uniform <- 2
   toff_sd_uniform_bot <- 1
+  d13C.analyt.sd <- 0.1
+  d13CO2_sigma_upper <- 0.1
+  d13CO2_level_prior_mean <- -6
 
   bf.nsb.m <- 0
   bf.nsb.sd <- 0.25
@@ -165,6 +168,14 @@ d13CO2 <- function(age.min = 0,
 
   bulk_marg.nsb.m <- 0
   bulk_marg.nsb.sd <- 0.75
+
+  nsb.priors <- data.frame(
+    archive = c("bf", "pf", "brach", "bivalve", "amm", "bel", "micrite", "bulk", "bulk_sr", "bulk_marg"),
+    mean = 0,
+    sd = c(bf.nsb.sd, pf.nsb.sd, brach.nsb.sd, bivalve.nsb.sd, amm.nsb.sd,
+           bel.nsb.sd, micrite.nsb.sd, bulk.nsb.sd, bulk_sr.nsb.sd, bulk_marg.nsb.sd),
+    stringsAsFactors = FALSE
+  )
 
 
   ####################################################################################################
@@ -199,8 +210,12 @@ d13CO2 <- function(age.min = 0,
   ##### load and prepare proxy and climate data, indexing vectors and matrices
   ####################################################################################################
 
-  prox.in <- as.data.frame(utils::read.csv(file = plate_path))
-  prox.in <- cbind(prox.in[,1:7], prox.in[,9:10], prox.in[,21:27], rep(x = toff_sd_uniform, times = nrow(prox.in)))
+  prox.raw <- as.data.frame(utils::read.csv(file = plate_path))
+  paleogeo.cols <- paste0(c("plng_", "plat_"), plate_model)
+  climate.cols <- c("MAT", "GMST_Li22", "GMST_PhanDA", "GMST_PhanDA_hi",
+                    "GMST_PhanDA_lo", "temp_offset", "temp_offset_PhanDA")
+  prox.in <- cbind(prox.raw[,1:7], prox.raw[,paleogeo.cols], prox.raw[,climate.cols],
+                   rep(x = toff_sd_uniform, times = nrow(prox.raw)))
   names(prox.in) <- c("age", "d13C", "source", "site", "lat", "lon", "category",
                       "paleolon", "paleolat", "MAT", "GMST_Scotese21", "GMST_PhanDA", "GMST_PhanDA_hi",
                       "GMST_PhanDA_lo", "temp_offset", "temp_offset_PhanDA", "temp_offset_sd")
@@ -217,12 +232,12 @@ d13CO2 <- function(age.min = 0,
 
   ages.short <- seq(from = max(prox.in$age), to = min(prox.in$age), by = -1*step.int) - 0.5*step.int
   ages <- seq(from = n.spinup*step.int + max(prox.in$age), to = min(prox.in$age), by = -1*step.int) - 0.5*step.int
-  ai.all <- c(c(1:n.spinup), sort(unique(prox.in$ai), decreasing = FALSE))
+  ai.all <- seq_along(ages)
   age.indices <- as.data.frame(cbind(ai.all, ages))
   names(age.indices) <- c("ai", "age")
 
-  dt <- abs(diff(unique(ages), lag = 1))
-  n.steps <- as.numeric(length(dt) + 1)
+  dt.scale <- abs(diff(ages))/1000
+  n.steps <- as.numeric(length(dt.scale) + 1)
   age.max.spinup <- age.max + step.int*n.spinup
 
   PhanDA_sd <- ((prox.in$GMST_PhanDA_hi - prox.in$GMST_PhanDA) +
@@ -252,13 +267,36 @@ d13CO2 <- function(age.min = 0,
   flattened$GMST_PhanDA_interp <- stats::approx(prox.in$age, prox.in$GMST_PhanDA, xout = flattened$ages, rule = 2, ties = mean)$y
   flattened$GMST_Scotese21_interp <- stats::approx(prox.in$age, prox.in$GMST_Scotese21, xout = flattened$ages, rule = 2, ties = mean)$y
   flattened$GMST_PhanDA_sd_interp <- stats::approx(prox.in$age, PhanDA_sd, xout = flattened$ages, rule = 2, ties = mean)$y
-  flattened$temp_offset_interp <- stats::approx(prox.in$age, prox.in$temp_offset, xout = flattened$ages, rule = 2, ties = mean)$y
-  flattened$temp_offset_PhanDA_interp <- stats::approx(prox.in$age, prox.in$temp_offset_PhanDA, xout = flattened$ages, rule = 2, ties = mean)$y
-  flattened$temp_offset_sd_interp <- stats::approx(prox.in$age, prox.in$temp_offset_sd, xout = flattened$ages, rule = 2, ties = mean)$y
+  offset.column <- if(temp_offset_model == "Li22") "temp_offset" else "temp_offset_PhanDA"
+  offset.data <- data.frame(ai = prox.in$ai, site.index = prox.in$site.index,
+                            temp_offset = prox.in[[offset.column]],
+                            temp_offset_sd = prox.in$temp_offset_sd)
+  offset.data <- offset.data[is.finite(offset.data$temp_offset),]
+  cell.offsets <- stats::aggregate(cbind(temp_offset, temp_offset_sd) ~ ai + site.index,
+                                   data = offset.data, FUN = mean, na.rm = TRUE)
+  cell.key <- paste(cell.offsets$ai, cell.offsets$site.index, sep = "_")
+  flattened.key <- paste(flattened$ai, flattened$site.index, sep = "_")
+  offset.rows <- match(flattened.key, cell.key)
+  flattened$temp_offset_interp <- cell.offsets$temp_offset[offset.rows]
+  flattened$temp_offset_sd_interp <- cell.offsets$temp_offset_sd[offset.rows]
+  missing.offsets <- !is.finite(flattened$temp_offset_interp)
+  if(any(missing.offsets)){
+    offset.site <- stats::aggregate(cbind(temp_offset, temp_offset_sd) ~ site.index,
+                                    data = offset.data, FUN = mean, na.rm = TRUE)
+    offset.site.rows <- match(flattened$site.index[missing.offsets], offset.site$site.index)
+    flattened$temp_offset_interp[missing.offsets] <- offset.site$temp_offset[offset.site.rows]
+    flattened$temp_offset_sd_interp[missing.offsets] <- offset.site$temp_offset_sd[offset.site.rows]
+  }
+  missing.offsets <- !is.finite(flattened$temp_offset_interp)
+  if(any(missing.offsets)){
+    flattened$temp_offset_interp[missing.offsets] <- stats::approx(
+      prox.in$age, prox.in[[offset.column]], xout = flattened$ages[missing.offsets],
+      rule = 2, ties = mean)$y
+    flattened$temp_offset_sd_interp[missing.offsets] <- toff_sd_uniform
+  }
   flattened <- flattened[order(flattened$ai, flattened$site.index), ]
   flattened$row.index <- 1:nrow(flattened)
   rownames(flattened) <- NULL
-  si.flat <- flattened$site.index
 
 
   ####################################################################################################
@@ -277,136 +315,49 @@ d13CO2 <- function(age.min = 0,
   clean.d13Cbulk_sr <- clean.d13C[clean.d13C$category == "bulk semi restricted",]
   clean.d13Cbulk_marg <- clean.d13C[clean.d13C$category %in% c("bulk marginal sea", "bulk marginal sea restricting up section"), ]
 
-  ai.d13Cbf <- sort(c(as.integer(clean.d13Cbf$ai)), decreasing = FALSE)
-  si.d13Cbf <- clean.d13Cbf$site.index
-  d13Cbf.data <- clean.d13Cbf$d13C
-  n.d13Cbf <- length(d13Cbf.data)
+  archive.data.raw <- list(bf = clean.d13Cbf, pf = clean.d13Cpf,
+                           brach = clean.d13Cbrach, bivalve = clean.d13Cbivalve,
+                           amm = clean.d13Camm, bel = clean.d13Cbel,
+                           micrite = clean.d13Cmicrite, bulk = clean.d13Cbulk,
+                           bulk_sr = clean.d13Cbulk_sr, bulk_marg = clean.d13Cbulk_marg)
 
-  ai.d13Cpf <- sort(c(as.integer(clean.d13Cpf$ai)), decreasing = FALSE)
-  si.d13Cpf <- clean.d13Cpf$site.index
-  d13Cpf.data <- clean.d13Cpf$d13C
-  n.d13Cpf <- length(d13Cpf.data)
+  level.archive.covariance <- matrix(3^2, nrow = 11, ncol = 11)
+  diag(level.archive.covariance) <- c(3^2, 3^2 + nsb.priors$sd^2)
+  level_archive_precision <- solve(level.archive.covariance)
 
-  ai.d13Cbrach <- sort(c(as.integer(clean.d13Cbrach$ai)), decreasing = FALSE)
-  si.d13Cbrach <- clean.d13Cbrach$site.index
-  d13Cbrach.data <- clean.d13Cbrach$d13C
-  n.d13Cbrach <- length(d13Cbrach.data)
-
-  ai.d13Cbivalve <- sort(c(as.integer(clean.d13Cbivalve$ai)), decreasing = FALSE)
-  si.d13Cbivalve <- clean.d13Cbivalve$site.index
-  d13Cbivalve.data <- clean.d13Cbivalve$d13C
-  n.d13Cbivalve <- length(d13Cbivalve.data)
-
-  ai.d13Camm <- sort(c(as.integer(clean.d13Camm$ai)), decreasing = FALSE)
-  si.d13Camm <- clean.d13Camm$site.index
-  d13Camm.data <- clean.d13Camm$d13C
-  n.d13Camm <- length(d13Camm.data)
-
-  ai.d13Cbel <- sort(c(as.integer(clean.d13Cbel$ai)), decreasing = FALSE)
-  si.d13Cbel <- clean.d13Cbel$site.index
-  d13Cbel.data <- clean.d13Cbel$d13C
-  n.d13Cbel <- length(d13Cbel.data)
-
-  ai.d13Cmicrite <- sort(c(as.integer(clean.d13Cmicrite$ai)), decreasing = FALSE)
-  si.d13Cmicrite <- clean.d13Cmicrite$site.index
-  d13Cmicrite.data <- clean.d13Cmicrite$d13C
-  n.d13Cmicrite <- length(d13Cmicrite.data)
-
-  ai.d13Cbulk <- sort(c(as.integer(clean.d13Cbulk$ai)), decreasing = FALSE)
-  si.d13Cbulk <- clean.d13Cbulk$site.index
-  d13Cbulk.data <- clean.d13Cbulk$d13C
-  n.d13Cbulk <- length(d13Cbulk.data)
-
-  ai.d13Cbulk_sr <- sort(c(as.integer(clean.d13Cbulk_sr$ai)), decreasing = FALSE)
-  si.d13Cbulk_sr <- clean.d13Cbulk_sr$site.index
-  d13Cbulk_sr.data <- clean.d13Cbulk_sr$d13C
-  n.d13Cbulk_sr <- length(d13Cbulk_sr.data)
-
-  ai.d13Cbulk_marg <- sort(c(as.integer(clean.d13Cbulk_marg$ai)), decreasing = FALSE)
-  si.d13Cbulk_marg <- clean.d13Cbulk_marg$site.index
-  d13Cbulk_marg.data <- clean.d13Cbulk_marg$d13C
-  n.d13Cbulk_marg <- length(d13Cbulk_marg.data)
-
-
-  ####################################################################################################
-  ##### index each row of data to flattened data frame combinations
-  ####################################################################################################
-
-  ri.d13Cbf <- flattened$row.index[
-    ri.d13Cbf <- match(
-      interaction(clean.d13Cbf$ai, clean.d13Cbf$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cpf <- flattened$row.index[
-    ri.d13Cpf <- match(
-      interaction(clean.d13Cpf$ai, clean.d13Cpf$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cbrach <- flattened$row.index[
-    ri.d13Cbrach <- match(
-      interaction(clean.d13Cbrach$ai, clean.d13Cbrach$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cbivalve <- flattened$row.index[
-    ri.d13Cbivalve <- match(
-      interaction(clean.d13Cbivalve$ai, clean.d13Cbivalve$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Camm <- flattened$row.index[
-    ri.d13Camm <- match(
-      interaction(clean.d13Camm$ai, clean.d13Camm$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cbel <- flattened$row.index[
-    ri.d13Cbel <- match(
-      interaction(clean.d13Cbel$ai, clean.d13Cbel$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cmicrite <- flattened$row.index[
-    ri.d13Cmicrite <- match(
-      interaction(clean.d13Cmicrite$ai, clean.d13Cmicrite$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cbulk <- flattened$row.index[
-    ri.d13Cbulk <- match(
-      interaction(clean.d13Cbulk$ai, clean.d13Cbulk$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cbulk_sr <- flattened$row.index[
-    ri.d13Cbulk_sr <- match(
-      interaction(clean.d13Cbulk_sr$ai, clean.d13Cbulk_sr$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  ri.d13Cbulk_marg <- flattened$row.index[
-    ri.d13Cbulk_marg <- match(
-      interaction(clean.d13Cbulk_marg$ai, clean.d13Cbulk_marg$site.index),
-      interaction(flattened$ai, flattened$site.index))
-  ]
-
-  if(any(is.na(ri.d13Cbf)) || any(is.na(ri.d13Cbulk))){
-    stop("Age-site indexing failed for one or more proxy observations")
+  aggregate.archive <- function(x){
+    if(nrow(x) == 0){
+      return(data.frame(ai = integer(0), site.index = integer(0), d13C = numeric(0),
+                        d13C.sd = numeric(0)))
+    }
+    key <- interaction(x$ai, x$site.index, drop = TRUE)
+    ans <- lapply(split(x, key), function(z){
+      data.frame(ai = z$ai[1], site.index = z$site.index[1], d13C = mean(z$d13C),
+                 d13C.sd = d13C.analyt.sd/sqrt(nrow(z)))
+    })
+    ans <- do.call(rbind, ans)
+    ans[order(ans$ai, ans$site.index),]
   }
+  archive.data <- lapply(archive.data.raw, aggregate.archive)
 
-  stopifnot(all(ri.d13Cbf >= 1 & ri.d13Cbf <= nrow(flattened)))
-  stopifnot(all(ri.d13Cpf >= 1 & ri.d13Cpf <= nrow(flattened)))
-  stopifnot(all(ri.d13Cbrach >= 1 & ri.d13Cbrach <= nrow(flattened)))
-  stopifnot(all(ri.d13Cbivalve >= 1 & ri.d13Cbivalve <= nrow(flattened)))
-  stopifnot(all(ri.d13Camm >= 1 & ri.d13Camm <= nrow(flattened)))
-  stopifnot(all(ri.d13Cbel >= 1 & ri.d13Cbel <= nrow(flattened)))
-  stopifnot(all(ri.d13Cbulk >= 1 & ri.d13Cbulk <= nrow(flattened)))
-  stopifnot(all(ri.d13Cmicrite >= 1 & ri.d13Cmicrite <= nrow(flattened)))
-  stopifnot(all(ri.d13Cbulk_sr >= 1 & ri.d13Cbulk_sr <= nrow(flattened)))
-  stopifnot(all(ri.d13Cbulk_marg >= 1 & ri.d13Cbulk_marg <= nrow(flattened)))
-  stopifnot(length(unique(flattened$row.index)) == nrow(flattened))
+  make.archive.index <- function(x){
+    if(nrow(x) == 0){
+      return(list(n.sites = 0L, n.flat = 0L, ai.flat = integer(0), si.flat = integer(0),
+                  ri.flat = integer(0), ri.obs = integer(0)))
+    }
+    archive.sites <- sort(unique(x$site.index))
+    archive.flat <- unique(x[c("ai", "site.index")])
+    archive.flat <- archive.flat[order(archive.flat$ai, archive.flat$site.index),]
+    archive.key <- paste(archive.flat$ai, archive.flat$site.index, sep = "_")
+    global.key <- paste(flattened$ai, flattened$site.index, sep = "_")
+    observation.key <- paste(x$ai, x$site.index, sep = "_")
+    list(n.sites = length(archive.sites), n.flat = nrow(archive.flat),
+         ai.flat = archive.flat$ai,
+         si.flat = match(archive.flat$site.index, archive.sites),
+         ri.flat = match(archive.key, global.key),
+         ri.obs = match(observation.key, archive.key))
+  }
+  archive.indexes <- lapply(archive.data, make.archive.index)
 
 
   ####################################################################################################
@@ -431,16 +382,8 @@ d13CO2 <- function(age.min = 0,
   ##### environmental prior and temperature offsets
   ####################################################################################################
 
-  d13CO2.l <- -12
-  d13CO2.u <- 0
-
-  if(temp_offset_model == "Li22"){
-    toff.m <- flattened$temp_offset_interp
-    toff.sd <- flattened$temp_offset_sd_interp
-  } else if(temp_offset_model == "PhanDA"){
-    toff.m <- flattened$temp_offset_PhanDA_interp
-    toff.sd <- flattened$temp_offset_sd_interp
-  }
+  toff.m <- flattened$temp_offset_interp
+  toff.sd <- flattened$temp_offset_sd_interp
 
   stopifnot(!any(is.na(GMST.m)), !any(is.na(GMST.sd)))
   stopifnot(!any(is.na(BWT.m)), !any(is.na(BWT.sd)))
@@ -451,9 +394,7 @@ d13CO2 <- function(age.min = 0,
   ####################################################################################################
 
   data.pass <- list("n.steps" = n.steps,
-                    "dt" = dt,
-                    "n.sites" = n.sites,
-                    "si.flat" = si.flat,
+                    "dt.scale" = dt.scale,
                     "ai.flat" = ai.flat,
                     "GMST.obs" = GMST.m,
                     "GMST.sd" = GMST.sd,
@@ -462,81 +403,28 @@ d13CO2 <- function(age.min = 0,
                     "toff_sd_uniform_bot" = toff_sd_uniform_bot,
                     "toff.m" = toff.m,
                     "toff.sd" = toff.sd,
-                    "d13CO2.l" = d13CO2.l,
-                    "d13CO2.u" = d13CO2.u)
+                    "d13CO2_sigma_upper" = d13CO2_sigma_upper,
+                    "d13CO2_level_prior_mean" = d13CO2_level_prior_mean,
+                    "level_archive_precision" = level_archive_precision)
 
-  data.pass.bf <- list("d13Cbf.data" = d13Cbf.data,
-                       "ai.d13Cbf" = ai.d13Cbf,
-                       "ri.d13Cbf" = ri.d13Cbf,
-                       "n.d13Cbf" = n.d13Cbf,
-                       "bf.nsb.m" = bf.nsb.m,
-                       "bf.nsb.sd" = bf.nsb.sd)
-
-  data.pass.pf <- list("d13Cpf.data" = d13Cpf.data,
-                       "ai.d13Cpf" = ai.d13Cpf,
-                       "ri.d13Cpf" = ri.d13Cpf,
-                       "n.d13Cpf" = n.d13Cpf,
-                       "pf.nsb.m" = pf.nsb.m,
-                       "pf.nsb.sd" = pf.nsb.sd)
-
-  data.pass.brach <- list("d13Cbrach.data" = d13Cbrach.data,
-                          "ai.d13Cbrach" = ai.d13Cbrach,
-                          "ri.d13Cbrach" = ri.d13Cbrach,
-                          "n.d13Cbrach" = n.d13Cbrach,
-                          "brach.nsb.m" = brach.nsb.m,
-                          "brach.nsb.sd" = brach.nsb.sd)
-
-  data.pass.bivalve <- list("d13Cbivalve.data" = d13Cbivalve.data,
-                            "ai.d13Cbivalve" = ai.d13Cbivalve,
-                            "ri.d13Cbivalve" = ri.d13Cbivalve,
-                            "n.d13Cbivalve" = n.d13Cbivalve,
-                            "bivalve.nsb.m" = bivalve.nsb.m,
-                            "bivalve.nsb.sd" = bivalve.nsb.sd)
-
-  data.pass.amm <- list("d13Camm.data" = d13Camm.data,
-                        "ai.d13Camm" = ai.d13Camm,
-                        "ri.d13Camm" = ri.d13Camm,
-                        "n.d13Camm" = n.d13Camm,
-                        "amm.nsb.m" = amm.nsb.m,
-                        "amm.nsb.sd" = amm.nsb.sd)
-
-  data.pass.bel <- list("d13Cbel.data" = d13Cbel.data,
-                        "ai.d13Cbel" = ai.d13Cbel,
-                        "ri.d13Cbel" = ri.d13Cbel,
-                        "n.d13Cbel" = n.d13Cbel,
-                        "bel.nsb.m" = bel.nsb.m,
-                        "bel.nsb.sd" = bel.nsb.sd)
-
-  data.pass.micrite <- list("d13Cmicrite.data" = d13Cmicrite.data,
-                            "ai.d13Cmicrite" = ai.d13Cmicrite,
-                            "ri.d13Cmicrite" = ri.d13Cmicrite,
-                            "n.d13Cmicrite" = n.d13Cmicrite,
-                            "micrite.nsb.m" = micrite.nsb.m,
-                            "micrite.nsb.sd" = micrite.nsb.sd)
-
-  data.pass.bulk <- list("d13Cbulk.data" = d13Cbulk.data,
-                         "ai.d13Cbulk" = ai.d13Cbulk,
-                         "ri.d13Cbulk" = ri.d13Cbulk,
-                         "n.d13Cbulk" = n.d13Cbulk,
-                         "bulk.nsb.m" = bulk.nsb.m,
-                         "bulk.nsb.sd" = bulk.nsb.sd)
-
-  data.pass.bulk_sr <- list("d13Cbulk_sr.data" = d13Cbulk_sr.data,
-                            "ai.d13Cbulk_sr" = ai.d13Cbulk_sr,
-                            "ri.d13Cbulk_sr" = ri.d13Cbulk_sr,
-                            "n.d13Cbulk_sr" = n.d13Cbulk_sr,
-                            "bulk_sr.nsb.m" = bulk_sr.nsb.m,
-                            "bulk_sr.nsb.sd" = bulk_sr.nsb.sd)
-
-  data.pass.bulk_marg <- list("d13Cbulk_marg.data" = d13Cbulk_marg.data,
-                              "ai.d13Cbulk_marg" = ai.d13Cbulk_marg,
-                              "ri.d13Cbulk_marg" = ri.d13Cbulk_marg,
-                              "n.d13Cbulk_marg" = n.d13Cbulk_marg,
-                              "bulk_marg.nsb.m" = bulk_marg.nsb.m,
-                              "bulk_marg.nsb.sd" = bulk_marg.nsb.sd)
-
-  data.pass <- c(data.pass, data.pass.bf, data.pass.pf, data.pass.brach, data.pass.bivalve, data.pass.amm,
-                 data.pass.bel, data.pass.micrite, data.pass.bulk, data.pass.bulk_sr, data.pass.bulk_marg)
+  stems <- c(bf = "d13Cbf", pf = "d13Cpf", brach = "d13Cbrach",
+             bivalve = "d13Cbivalve", amm = "d13Camm", bel = "d13Cbel",
+             micrite = "d13Cmicrite", bulk = "d13Cbulk",
+             bulk_sr = "d13Cbulk_sr", bulk_marg = "d13Cbulk_marg")
+  for(archive in names(archive.data)){
+    x <- archive.data[[archive]]
+    idx <- archive.indexes[[archive]]
+    stem <- stems[[archive]]
+    data.pass[[paste0(stem, ".data")]] <- x$d13C
+    data.pass[[paste0(stem, ".sd")]] <- x$d13C.sd
+    data.pass[[paste0("ri.", stem)]] <- idx$ri.obs
+    data.pass[[paste0("n.", stem)]] <- nrow(x)
+    data.pass[[paste0("n.sites.", archive)]] <- idx$n.sites
+    data.pass[[paste0("n.flat.", archive)]] <- idx$n.flat
+    data.pass[[paste0("ai.flat.", archive)]] <- idx$ai.flat
+    data.pass[[paste0("si.flat.", archive)]] <- idx$si.flat
+    data.pass[[paste0("ri.flat.", archive)]] <- idx$ri.flat
+  }
 
 
   ####################################################################################################
